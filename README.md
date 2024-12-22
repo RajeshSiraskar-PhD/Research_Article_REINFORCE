@@ -58,15 +58,18 @@ ParkerHolder2022AutoRL	Say in text \cite{ParkerHolder2022AutoRL} -- The most aut
 	for image related RL: there has been little research into alternatives, still using from original DQN paper 
 
 ------------------------------------
-*Issues with HP*	
-"ParkerHolder2022AutoRL: Henderson et al. (2018) found that many of the most successful recent algorithms
-were brittle with respect to hyperparameters"
-	"ParkerHolder2022AutoRL: The non-stationarity of the AutoRL problem poses new challenges for classical (hyperparameter) optimization methods"
+*Issues with HP*
+
+ParkerHolder2022AutoRL: 'Henderson et al. (2018) found that many of the most successful recent algorithms
+were brittle with respect to hyperparameters'
+
+ParkerHolder2022AutoRL: 'The non-stationarity of the AutoRL problem poses new challenges for classical (hyperparameter) optimization methods'
 ------------------------------------
 
 *In conclusion:*
- - mention ParkerHolder2022AutoRL	"Finally, beyond the well-flagged hyperparameters, there are even significant code level implementation details. Henderson et al. (2018) identified this and showed that different codebases for the same algorithm produced markedly different results"
-	While RL as a field has seen many innovations in the last years, small changes to the algorithm or its implementation can have a big impact on its results (Henderson et al., 2018; Andrychowicz et al., 2021; Engstrom et al., 2020). 
+ - mention ParkerHolder2022AutoRL	'Finally, beyond the well-flagged hyperparameters, there are even significant code level implementation details. Henderson et al. (2018) identified this and showed that different codebases for the same algorithm produced markedly different results'
+ 
+'While RL as a field has seen many innovations in the last years, small changes to the algorithm or its implementation can have a big impact on its results (Henderson et al., 2018; Andrychowicz et al., 2021; Engstrom et al., 2020)'
 	
 ------------------------------------	
 *R2-7-19: *
