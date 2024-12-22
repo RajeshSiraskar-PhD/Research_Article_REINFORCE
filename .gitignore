@@ -1,0 +1,12 @@
+storage/
+*/storage
+*.aux
+*.log
+*.lot
+*.lof
+*.bbl
+*.blg
+*.txt
+*.out
+*.synctex.gz
+*.gz

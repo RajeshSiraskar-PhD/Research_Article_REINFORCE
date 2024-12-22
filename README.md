@@ -83,5 +83,7 @@ ParkerHolder2022AutoRL: 'The non-stationarity of the AutoRL problem poses new ch
 ------------------------------------	
 ### R2-7-19:
 
-Future aras!	"In addition to the discussion so far, the majority of the work in this survey addresses single agent RL. Multi- Objective Reinforcement Learning (MORL), (3) offline RL, where agents must generalize to an real world environment from a static dataset of experiences ie PHM datasets"
+Future areas: 4 add: Multi-agent, Multi-obj and Offline RL and Meta-RL (learning to learn)
+
+	"In addition to the discussion so far, the majority of the work in this survey addresses single agent RL. Multi- Objective Reinforcement Learning (MORL), (3) offline RL, where agents must generalize to an real world environment from a static dataset of experiences ie PHM datasets"
 
