@@ -87,3 +87,27 @@ Future areas: 4 add: Multi-agent, Multi-obj and Offline RL and Meta-RL (learning
 
 	"In addition to the discussion so far, the majority of the work in this survey addresses single agent RL. Multi- Objective Reinforcement Learning (MORL), (3) offline RL, where agents must generalize to an real world environment from a static dataset of experiences ie PHM datasets"
 
+------------------------------------	
+
+## IMPORTANT Ref: mania2018 and Nikolai_Matni_2019_REINFORCE_lecture
+
+### In support of SIMPLER ALGOS!!!!
+### Performance is Domain specific
+### R-2-13 - Discuss: Computational complexity 
+
+Ref: Nikolai_Matni_2019_REINFORCE_lecture
+
+"Although the approach has a few drawbacks, the simplicity of implementation is often valuable enough to
+justify its use. There are two primary applications of this sort of stochastic search approach in reinforcement
+learning: policy gradient and pure random search."
+direct policy search, derivative-free, can solve "unconstrained optimization problems through function evaluations."
+If you can sample efficiently from p(z; theta), then you can run the algorithm on essentially any problem.
+"using a derivative-free optimization method, and can not achieve the same perfor-
+mance as methods that compute actual gradients. This performance gap is exacerbated when the function
+evaluations are noisy. Another drawback to this approach is that our choice of probability distribution can
+lead to high variance of stochastic gradients. High variance requires more samples to be drawn in order to
+nd a minima or maxima. In other words, sample complexity increases."
+
+Nikolai_Matni_2019: It is difficult to say which approach is better without selecting a specific problem to which to apply them
+mania2018: >> Simple random search provides a competitive approach to reinforcement learning
+Computationally, our random search algorithm is at least 15 times more ecient than the fastest competing model-free methods on these benchmarks.
