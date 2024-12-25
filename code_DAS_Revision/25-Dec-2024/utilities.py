@@ -89,6 +89,17 @@ def add_performance_columns_V1(df_expts):
 
     return(df_expts)
 
+def sensitivity_anlysis_metrics(df_expts, n_expt, algo_metrics):
+    print(' - Updating Sensitivity Anlysis metrics...')
+    df_expts.loc[n_expt, 'RF_Pr'] = algo_metrics['Precision']['mean']['REINFORCE']
+    df_expts.loc[n_expt, 'RF_Pr_sd'] = algo_metrics['Precision']['std']['REINFORCE']
+    df_expts.loc[n_expt, 'RF_Rc'] = algo_metrics['Recall']['mean']['REINFORCE']
+    df_expts.loc[n_expt, 'RF_Rc_sd'] = algo_metrics['Recall']['std']['REINFORCE']
+    df_expts.loc[n_expt, 'RF_F1'] = algo_metrics['F_1_Score']['mean']['REINFORCE']
+    df_expts.loc[n_expt, 'RF_F1_sd'] = algo_metrics['F_1_Score']['std']['REINFORCE']
+    df_expts.loc[n_expt, 'RF_F05'] = algo_metrics['F_Beta_0_5']['mean']['REINFORCE']
+    df_expts.loc[n_expt, 'RF_F05_sd'] = algo_metrics['F_Beta_0_5']['std']['REINFORCE']
+
 def summary_performance_metrics(df_expts, n_expt, algo_metrics):
     df_expts.loc[n_expt, 'RF_Pr'] = algo_metrics['Precision']['mean']['REINFORCE']
     df_expts.loc[n_expt, 'RF_Pr_sd'] = algo_metrics['Precision']['std']['REINFORCE']
@@ -208,7 +219,7 @@ def store_results(file, rounds, episodes, rewards_history, ep_tool_replaced_hist
     dt_t = dt.strftime('%H:%M:%S')
     df = pd.DataFrame({'Date': dt_d, 'Time': dt_t, 'Round': rounds, 'Episode': episodes, 'Rewards': rewards_history, 'Tool_replaced': ep_tool_replaced_history})
     # Append to existing training records file
-    df.to_csv(file, mode='a', index=False, header=False)
+    df.to_csv(file, mode='a', index=False, header=True)
     print(f'REINFORCE algorithm results saved to {file}')
 
 def write_test_results(results, results_file):
@@ -256,7 +267,7 @@ def test_script(method, training_round, df, algo, episodes, env, env_info, agent
 
     # Compute F_Beta at 0.5, 0.75, 1.0
     (pr, rc, f1_0_5, support) = precision_recall_fscore_support(y_true=lst_action_actual, y_pred=lst_action_pred, beta=0.5, average=method, zero_division=0)
-    (pr, rc, f1_0_75, support) = precision_recall_fscore_support(y_true=lst_action_actual, y_pred=lst_action_pred, beta=0.75, average=method, zero_division=0)
+    (pr, rc, f1_0_75, support) = precision_recall_fscore_support(y_true=lst_action_actual, y_pred=lst_action_pred, beta=2.0, average=method, zero_division=0)
     (pr, rc, f1_1_0, support) = precision_recall_fscore_support(y_true=lst_action_actual, y_pred=lst_action_pred, beta=1.0, average=method, zero_division=0)
 
     if n_0 == 0: n_0 = 1
