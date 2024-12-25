@@ -1,0 +1,2 @@
+expt_n,environment,environment_info,data_file,Model_name,R1,R2,R3,wear_threshold,threshold_factor,add_noise,breakdown_chance,episodes,milling_operations_max,version_prefix,test_info,test_cases,test_rounds,results_folder,test_file,train_sample_rate,test_sample_rate
+3,SS,PHM C01 SS NBD,data\PHM_Tool_Wear_Data_C01_0p12.csv,RF_Model_PHM_C01_SS_NoNBD.mdl,1,-1,-40,0.12,0.9,0,0,800,348,PHM_C01_SS,Separate test set.,40,10,results/,,100,70
