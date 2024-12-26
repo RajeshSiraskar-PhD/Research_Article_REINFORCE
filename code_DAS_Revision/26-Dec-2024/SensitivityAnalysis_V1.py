@@ -1,20 +1,12 @@
-#!/usr/bin/env python
-# coding: utf-8
+# Sensitivity Analysis Code
 
-# Milling Tool Wear Maintenance Policy using the REINFORCE algorithm
-# V.3.0: Add cleaning up files. If the performance is not satisfactory -
-#           delete the files, also do not train and test SB models
-# V.5.0: Ensure same test samples are retained for the Sb3 algos. Create a list
-#           of lists, to collect the sampled test cases in this list
 START_ROUND = 0
-TRAINING_ROUNDS = 2
-EXPTS_SETTINGS = 'TestRun.csv'
+TRAINING_ROUNDS = 1
+# EXPTS_SETTINGS = 'SensitivityAnalysis.csv'
+EXPTS_SETTINGS = 'SensitivityAnalysis_LR_Gamma_ReLU.csv'
 MIN_MODEL_PERFORMANCE = -1.0 # Set to 0.70, to auto save models with metrics > 0.7
-SB3_EPISODES = 100
 
-print ('\n ====== REINFORCE for Predictive Maintenance ======')
-print ('        V.1.0 01-Aug-2023 -- RELEASE VERSION')
-print (' **************** TESTING ****************')
+print ('\n == REINFORCE for Predictive Maintenance ==')
 print (120*'-')
 print (f'* Experiments file: {EXPTS_SETTINGS} -- Rounds {TRAINING_ROUNDS}')
 print (120*'=')
@@ -26,18 +18,18 @@ import os
 import numpy as np
 import pandas as pd
 from stable_baselines3.common.vec_env import DummyVecEnv
-from stable_baselines3 import A2C, PPO, DQN
 from stable_baselines3.common.monitor import Monitor
 
 from milling_tool_environment import MillingTool_SS_NT, MillingTool_MS_V3
 from utilities import compute_metrics, compute_metrics_simple, write_metrics_report, store_results, plot_learning_curve, single_axes_plot, lnoise
 from utilities import two_axes_plot, two_variable_plot, plot_error_bounds, test_script, write_test_results, downsample, save_model, load_model, clean_up_files
-from utilities import add_performance_columns, summary_performance_metrics
+from utilities import add_performance_columns, summary_performance_metrics, sensitivity_anlysis_metrics
 from reinforce_classes import PolicyNetwork, Agent
 
 experiment_summary = []
 
 for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
+
     # Auto experiment file structure
     print ('- Loading Experiments...')
     df_expts = pd.read_csv(EXPTS_SETTINGS)
@@ -57,6 +49,7 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
     n_expts = len(df_expts.index)
 
     for n_expt in range(n_expts):
+
         dt = datetime.now()
         dt_d = dt.strftime('%d-%b-%Y')
         dt_t = dt.strftime('%H-%M')
@@ -87,6 +80,11 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
         TRAIN_SR = df_expts['train_sample_rate'][n_expt]
         TEST_SR = df_expts['test_sample_rate'][n_expt]
 
+       # Policy network learning parameters
+        alpha = df_expts['learning_rate'][n_expt]  # Learning rate
+        gamma = df_expts['gamma'][n_expt]  # Discount rate
+        print (f'\n **** Sensitivity Analysis: LR: {alpha} gamma: {gamma} ****')
+
         ## Read data
         df = pd.read_csv(DATA_FILE)
         n_records = len(df.index)
@@ -102,13 +100,11 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
         METRICS_METHOD = 'binary' # average method = {‘micro’, ‘macro’, ‘samples’, ‘weighted’, ‘binary’}
         WEAR_THRESHOLD_NORMALIZED = 0.0 # normalized to the max wear threshold
 
-        # Policy network learning parameters
-        gamma = 0.99
-        alpha = 0.01
-
         CONSOLIDATED_METRICS_FILE = f'{RESULTS_FOLDER}/TEST_CONSOLIDATED_METRICS.csv'
         RESULTS_FILE = f'{RESULTS_FOLDER}/{VERSION}_test_results_{dt_m}.csv'
         METRICS_FILE = f'{RESULTS_FOLDER}/{VERSION}_metrics.csv'
+        RF_TRAINING_METRICS = f'{RESULTS_FOLDER}/{VERSION}_Sensitivity_Analysis_LR_{alpha}_Gamma_{gamma}.csv'
+
         END_ROUND = START_ROUND + TRAINING_ROUNDS
         EXPTS_REPORT = f'{RESULTS_FOLDER}/Experiment_Results_{START_ROUND}_{END_ROUND}_{n_tr_round}.csv'
 
@@ -117,15 +113,8 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
         print('\n- Columns added to results file: ', RESULTS_FILE)
         results = ['Date', 'Time', 'Round', 'Environment', 'Training_data', 'Wear_Threshold', 'Test_data', 'Algorithm', 'Episodes', 'Normal_cases', 'Normal_error',
                    'Replace_cases', 'Replace_error', 'Overall_error',
-                   'Precision', 'Recall', 'F_Beta_0_5', 'F_Beta_0_75', 'F_1_Score']
+                   'Precision', 'Recall', 'F_Beta_0_5', 'F_Beta_2', 'F_1_Score']
         write_test_results(results, RESULTS_FILE)
-
-
-        # ## Data pre-process
-        # 1. Add noise
-        # 2. Add ACTION_CODE based on tool wear threshold
-        # 3. Normalize data base
-        # 4. Split into train and test
 
         # 1. Add noise
         if ADD_NOISE:
@@ -168,12 +157,6 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
         title=f'Tool Wear (mm) data\n{VERSION}'
         two_axes_plot(x, y1, y2, title=title, x_label='Time', y1_label='Tool Wear (mm)', y2_label='Action code (1=Replace)', xticks=20, file=wear_plot, threshold_org = WEAR_THRESHOLD_ORG_NORMALIZED, threshold=WEAR_THRESHOLD_NORMALIZED)
 
-
-        # ## Milling Tool Environment -
-        # 1. MillingTool_SS: Single state: tool_wear and time
-        # 2. MillingTool_MS: Multie-state: force_x; force_y; force_z; vibration_x; vibration_y; vibration_z; acoustic_emission_rms; tool_wear
-        # - Note: ACTION_CODE is only used for evaluation later (testing phase) and is NOT passed as part of the environment states
-
         if ENVIRONMENT_CLASS == 'SS':
             env = MillingTool_SS_NT(df_train, WEAR_THRESHOLD_NORMALIZED, MILLING_OPERATIONS_MAX, ADD_NOISE, BREAKDOWN_CHANCE, R1, R2, R3)
             env_test = MillingTool_SS_NT(df_test, WEAR_THRESHOLD_ORG_NORMALIZED, MILLING_OPERATIONS_MAX, ADD_NOISE, BREAKDOWN_CHANCE, R1, R2, R3)
@@ -182,10 +165,6 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
             env_test = MillingTool_MS_V3(df_test, WEAR_THRESHOLD_ORG_NORMALIZED, MILLING_OPERATIONS_MAX, ADD_NOISE, BREAKDOWN_CHANCE, R1, R2, R3)
         else:
             print(' ERROR - initatizing environment')
-
-        # Enable tensorboard rewards and loss plots
-        # env = Monitor(env, logdir, allow_early_resets=True)
-        print('----NO MONITOR----')
 
         # ## REINFORCE RL Algorithm
         ### Main loop
@@ -201,7 +180,7 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
 
         # $$$ 
         truncated = False
-        
+
         time_RF = time.time()
         for episode in range(EPISODES):
             state = env.reset()
@@ -263,12 +242,12 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
         idx_normal_cases = df_test.index[df_test['ACTION_CODE'] < 1.0]
 
         # Process results
-        # eps = [i for i in range(EPISODES)]
-        # store_results(RF_TRAINING_FILE, training_round, eps, rewards_history, env.ep_tool_replaced_history)
+        training_round = 0
+        print('\n- Store SENSITIVITY analysis results i.e. REINFORCE training metrics...')
+        eps = [i for i in range(EPISODES)]
+        store_results(RF_TRAINING_METRICS, training_round, eps, rewards_history, env.ep_tool_replaced_history)
+
         print('\n- Test REINFORCE model...')
-        # print(80*'-')
-        # print(f'Algorithm\tNormal\terr.%\tReplace\terr.%\tOverall err.%')
-        # print(80*'-')
         avg_Pr = avg_Rc = avg_F1 = 0.0
 
         test_case_collection = []
@@ -278,7 +257,6 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
             idx_normal_cases = np.random.choice(idx_normal_cases, int(TEST_CASES/2), replace=False)
             test_cases = [*idx_normal_cases, *idx_replace_cases]
             test_case_collection.append(test_cases)
-            print(f'***** SB-3 TEST CASES: {test_round} -- {test_case_collection[test_round]}')
 
             results = test_script(METRICS_METHOD, test_round, df_test, 'REINFORCE', EPISODES, env_test, ENVIRONMENT_INFO, agent_RF,
                                   test_cases, TEST_INFO, DATA_FILE, WEAR_THRESHOLD, RESULTS_FILE)
@@ -312,66 +290,22 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
             model_file_RF = f'models/{VERSION}_RF_Model_{dt_m}_{avg_Pr:.2f}_{avg_Rc:.2f}_{avg_F1:.2f}.mdl'
             print(f'\n*** REINFORCE model performance satisfactory. Saving model to {model_file_RF} ***\n')
 
-            agent_RF.model_parameters = {'R1':R1, 'R2':R2, 'R3':R3, 'WEAR_THRESHOLD':WEAR_THRESHOLD, 'THRESHOLD_FACTOR':THRESHOLD_FACTOR, 'ADD_NOISE':ADD_NOISE, 'BREAKDOWN_CHANCE':BREAKDOWN_CHANCE, 'EPISODES':EPISODES, 'MILLING_OPERATIONS_MAX':MILLING_OPERATIONS_MAX}
+            agent_RF.model_parameters = {'R1':R1, 'R2':R2, 'R3':R3, 'WEAR_THRESHOLD':WEAR_THRESHOLD, 'THRESHOLD_FACTOR':THRESHOLD_FACTOR, \
+                                         'ADD_NOISE':ADD_NOISE, 'BREAKDOWN_CHANCE':BREAKDOWN_CHANCE, 'EPISODES':EPISODES, \
+                                         'MILLING_OPERATIONS_MAX':MILLING_OPERATIONS_MAX, 'Learning_Rate': alpha, 'Gamma':gamma}
             save_model(agent_RF, model_file_RF)
             df_expts.loc[n_expt, 'model_file'] = model_file_RF
-
-            # ## Stable-Baselines Algorithms
-            print('* Train Stable-Baselines-3 A2C, DQN and PPO models...')
-
-            total_timesteps = SB3_EPISODES
-            algos = ['A2C','DQN','PPO']
-            SB_agents = []
-
-            for SB_ALGO in algos:
-                if SB_ALGO.upper() == 'A2C': agent_SB = A2C('MlpPolicy', env)
-                if SB_ALGO.upper() == 'DQN': agent_SB = DQN('MlpPolicy', env)
-                if SB_ALGO.upper() == 'PPO': agent_SB = PPO('MlpPolicy', env)
-
-                print(f'- Training Stable-Baselines-3 {SB_ALGO} algorithm...')
-                time_SB = time.time()
-                agent_SB.learn(total_timesteps=total_timesteps)
-                time_SB = time.time() - time_SB
-                time_column = f'{SB_ALGO.upper()}_time'
-                df_expts.loc[n_expt, time_column] = time_SB
-
-                SB_agents.append(agent_SB)
-            n = 0
-            for agent_SB in SB_agents:
-                print(f'- Testing Stable-Baselines-3 {agent_SB} model...')
-                for test_round in range(TEST_ROUNDS):
-                    # Extract the test cases from the 'test_case_collection' list
-                    test_cases = test_case_collection[test_round]
-                    print(f'***** SB-3 TEST CASES: {test_round} -- {test_cases}')
-                    results = test_script(METRICS_METHOD, test_round, df_test, algos[n], EPISODES, env_test, ENVIRONMENT_INFO,
-                                          agent_SB, test_cases, TEST_INFO, DATA_FILE, WEAR_THRESHOLD, RESULTS_FILE)
-                    write_test_results(results, RESULTS_FILE)
-                    # end test loop
-
-                # Save SB model with results appended
-                sb_Pr = results[14]
-                sb_Rc = results[15]
-                sb_F1 = results[18]
-                model_file_SB = f'models/{VERSION}_{algos[n]}_{dt_m}_{sb_Pr:.2f}_{sb_Rc:.2f}_{sb_F1:.2f}.mdl'
-                print(f'- Save Stable-Baselines-3 model: {model_file_SB}')
-                agent_SB.save(model_file_SB)
-
-                n += 1
-                # end SB agents loop
-
-
-            ### Create a consolidated algorithm wise metrics summary
-
+            
             print(f'* Test Report: Algorithm level consolidated metrics will be written to: {METRICS_FILE}.')
 
             header_columns = [VERSION]
             write_test_results(header_columns, METRICS_FILE)
-            header_columns = ['Date', 'Time', 'Environment', 'Noise', 'Breakdown_chance', 'Train_data', 'env.R1', 'env.R2', 'env.R3', 'Wear threshold', 'Look-ahead Factor', 'Episodes', 'Terminate on', 'Test_info', 'Test_cases', 'Metrics_method', 'Version']
+            header_columns = ['Date', 'Time', 'Environment', 'Noise', 'Breakdown_chance', 'Train_data', 'env.R1', 'env.R2', 'env.R3', 'Learning_Rate', 'Gamma', 'Wear threshold', 'Look-ahead Factor', 'Episodes', 'Terminate on', 'Test_info', 'Test_cases', 'Metrics_method', 'Version']
             write_test_results(header_columns, METRICS_FILE)
 
             dt_t = dt.strftime('%H:%M:%S')
             noise_info = 'None' if ADD_NOISE == 0 else (1/ADD_NOISE)
-            header_info = [dt_d, dt_t, ENVIRONMENT_INFO, noise_info, BREAKDOWN_CHANCE, DATA_FILE, env.R1, env.R2, env.R3, WEAR_THRESHOLD, THRESHOLD_FACTOR, EPISODES, MILLING_OPERATIONS_MAX, TEST_INFO, TEST_CASES, METRICS_METHOD, VERSION]
+            header_info = [dt_d, dt_t, ENVIRONMENT_INFO, noise_info, BREAKDOWN_CHANCE, DATA_FILE, env.R1, env.R2, env.R3, alpha, gamma, WEAR_THRESHOLD, THRESHOLD_FACTOR, EPISODES, MILLING_OPERATIONS_MAX, TEST_INFO, TEST_CASES, METRICS_METHOD, VERSION]
             write_test_results(header_info, METRICS_FILE)
             write_test_results([], METRICS_FILE) # leave a blank line
             print('- Experiment related meta info written.')
@@ -394,7 +328,7 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
 
             # $$$ Update
             print(f'- Updating summary performance metrics.')
-            summary_performance_metrics(df_expts, n_expt, algo_metrics)
+            sensitivity_anlysis_metrics(df_expts, n_expt, algo_metrics)
 
             print(f'- End Experiment {n_tr_round}-{n_expt}')
         else:
@@ -415,72 +349,3 @@ for n_tr_round in range(START_ROUND, TRAINING_ROUNDS):
 
 # end for all n_tr_round training rounds
 
-if os.path.isfile('TempTrain.csv'):
-    os.remove('TempTrain.csv')
-if os.path.isfile('TempTest.csv'):
-    os.remove('TempTest.csv')
-
-print('\n\n FINAL PROCESSING of all experiment reports\n')
-
-import glob
-
-# For multi-training round - stability test experiments
-PATH = './results/MRL2'
-EXPT_REPORTS = f'{PATH}/Experiment_Results_*.csv'
-CONCAT_REPORT = f'{PATH}/Concat_Experiments_SS.csv'
-CONSOLIDATED_PERFORMANCE_REPORT = f'{PATH}/Consolidated_Experiments_Summary_SS.csv'
-
-report_files = glob.glob(EXPT_REPORTS)
-
-df_report = pd.concat((pd.read_csv(f, header = 0) for f in report_files))
-df_report.to_csv(CONCAT_REPORT)
-
-def compute_aggregated_metrics(df):
-    metrics = df.groupby(['environment_info']).agg(
-        {'RF_Pr': ['mean'], 'RF_Rc': ['mean'],'RF_F1': ['mean'], 'RF_F05': ['mean'],
-         'A2C_Pr': ['mean'], 'A2C_Rc': ['mean'],'A2C_F1': ['mean'], 'A2C_F05': ['mean'],
-         'DQN_Pr': ['mean'], 'DQN_Rc': ['mean'],'DQN_F1': ['mean'], 'DQN_F05': ['mean'],
-         'PPO_Pr': ['mean'], 'PPO_Rc': ['mean'],'PPO_F1': ['mean'], 'PPO_F05': ['mean'],
-
-         'RF_Pr_sd': ['mean'], 'RF_Rc_sd': ['mean'],'RF_F1_sd': ['mean'], 'RF_F05_sd': ['mean'],
-         'A2C_Pr_sd': ['mean'], 'A2C_Rc_sd': ['mean'],'A2C_F1_sd': ['mean'], 'A2C_F05_sd': ['mean'],
-         'DQN_Pr_sd': ['mean'], 'DQN_Rc_sd': ['mean'],'DQN_F1_sd': ['mean'], 'DQN_F05_sd': ['mean'],
-         'PPO_Pr_sd': ['mean'], 'PPO_Rc_sd': ['mean'],'PPO_F1_sd': ['mean'], 'PPO_F05_sd': ['mean']
-
-        })
-    return(metrics)
-
-algo_metrics = compute_aggregated_metrics(df_report)
-algo_metrics.to_csv(CONSOLIDATED_PERFORMANCE_REPORT)
-
-envs = df_report.environment_info.unique()
-
-overall = envs[0:]
-simulated_envs = envs[0:3]
-phm_ss_envs = envs[3:12]
-# phm_ms_envs = envs[12:]
-
-overall_metrics = algo_metrics.loc[overall]
-overall_means = overall_metrics.mean()
-overall_means = overall_means.sort_index(ascending=True)
-file = f'{PATH}/R2-overall_means.csv'
-overall_means.to_csv(file)
-
-simulated_metrics = algo_metrics.loc[simulated_envs]
-simulated_means = simulated_metrics.mean()
-simulated_means = simulated_means.sort_index(ascending=True)
-file = f'{PATH}/R2-simulated_means.csv'
-simulated_means.to_csv(file)
-
-phm_ss_metrics = algo_metrics.loc[phm_ss_envs]
-phm_ss_means = phm_ss_metrics.mean()
-phm_ss_means = phm_ss_means.sort_index(ascending=True)
-file = f'{PATH}/R2-phm_ss_means.csv'
-phm_ss_means.to_csv(file)
-
-# phm_ms_metrics = algo_metrics.loc[phm_ms_envs]
-# phm_ms_means = phm_ms_metrics.mean()
-# phm_ms_means = phm_ms_means.sort_index(ascending=True)
-# file = f'{PATH}/R2-phm_ms_means.csv'
-# phm_ms_means.to_csv(file)
-print('* Done. Epxeriment files summarized and environment level metrics computed')

@@ -1,0 +1,16 @@
+expt_n,environment,environment_info,data_file,Model_name,R1,R2,R3,wear_threshold,threshold_factor,add_noise,breakdown_chance,episodes,milling_operations_max,version_prefix,test_info,test_cases,test_rounds,results_folder,test_file,train_sample_rate,test_sample_rate,learning_rate,gamma
+1,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.01,0.99
+2,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.005,0.99
+3,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.001,0.99
+4,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.0005,0.99
+5,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.0001,0.99
+6,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.01,0.95
+7,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.005,0.95
+8,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.001,0.95
+9,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.0005,0.95
+10,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.0001,0.95
+11,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.01,0.9
+12,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.005,0.9
+13,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.001,0.9
+14,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.0005,0.9
+15,SS,PHM C04 SS NBD,data\PHM_Tool_Wear_Data_C04_0p098.csv,RF_Model_PHM_C04_SS_NoNBD.mdl,1,-1,-40,0.098,0.95,0,0,800,348,PHM_C04_SS,Separate test set.,40,10,results/DAS_R1,,100,70,0.0001,0.9
