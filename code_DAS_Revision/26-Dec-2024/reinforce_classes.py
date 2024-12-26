@@ -17,6 +17,7 @@ class PolicyNetwork(nn.Module):
     
     # Step 1: Define the network architecture
     def __init__(self, lr, input_dim, output_dim):
+        print('\n\n --- PolicyNetwork: tanh --- ')
         super(PolicyNetwork, self).__init__()
         
         # 1.1. Define network architecture

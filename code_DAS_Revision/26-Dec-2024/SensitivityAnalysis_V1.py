@@ -3,7 +3,7 @@
 START_ROUND = 0
 TRAINING_ROUNDS = 1
 # EXPTS_SETTINGS = 'SensitivityAnalysis.csv'
-EXPTS_SETTINGS = 'SensitivityAnalysis_LR_Gamma_ReLU.csv'
+EXPTS_SETTINGS = 'SensitivityAnalysis_LR_Gamma.csv'
 MIN_MODEL_PERFORMANCE = -1.0 # Set to 0.70, to auto save models with metrics > 0.7
 
 print ('\n == REINFORCE for Predictive Maintenance ==')
