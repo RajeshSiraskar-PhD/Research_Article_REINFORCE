@@ -1,10 +1,10 @@
-%% Discover Applied Sciences
-%% Revision 1
+%% Discover Applied Sciences - Revision 1
 %% 19-Dec-2024: Highlights
+%% 28-Dec-2024: Begin comments
 
 \documentclass[referee, sn-mathphys-num]{sn-jnl}
 %%%% Standard Packages
-%% $$$ <additional latex packages if required can be included here>
+%% <additional latex packages if required can be included here>
 \usepackage{subfigure}% Support for small, `sub' figures and tables
 \usepackage{chronosys} 	% Chronology
 \usepackage{xcolor, soul, colortbl} % Highlights
@@ -17,7 +17,7 @@
 %\usepackage[spaces, hyphens]{url}
 %\usepackage[colorlinks, allcolors=black]{hyperref}
 %\usepackage[colorlinks, allcolors=blue]{hyperref}
-%% $$$ <additional latex packages if required can be included here>
+%%  <additional latex packages if required can be included here>
 
 \usepackage{graphicx}%
 \usepackage{multirow}%
@@ -51,7 +51,7 @@
 
 % Macros
 \algnewcommand{\LineComment}[1]{\State \(\triangleright\) #1}
-\newcommand{\hlc}[2][lime!40]{{\colorlet{foo}{#1} \sethlcolor{foo}\hl{#2}}}
+\newcommand{\hlc}[2][cyan!17]{{\colorlet{foo}{#1} \sethlcolor{foo}\hl{#2}}}
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
@@ -96,9 +96,9 @@
 	\end{enumerate}
 	
 	\section{Introduction}
-	%% $$$Quote
+	%% Quote
 	%\epigraph{"Plurality should not be posited without necessity" -- Of two competing theories, the simpler explanation of an entity is to be preferred}{--- \textup{William of Ockham (1285?1347)}, The Occams razor principle}
-	%% $$$End Quote and first line of para without indent
+	%% End Quote and first line of para without indent
 	
 	Milling machines are highly versatile, ubiquitous tools serving a variety of industries. A milling machine removes metal from the work piece by rotating and driving a cutting device into it. Abrasive forces cause tool wear, and optimal tool replacement reduces direct costs and optimizes the machines' downtime. This is an important goal, considering that the global milling machine market is valued at USD 68.3 billion \cite{milling-market}. The cutting tool experiences multiple types of wear as it cuts through metal. Tool wear depends on several factors such as the cutting speed, force applied to the tool, lubrication and materials of the work piece and cutting tool. 
 	
@@ -481,14 +481,13 @@
 		\label{eq_metrics}
 	\end{equation}
 	
-	\textbf{Tool replacement precision}: Timely replacements, $TP$, ensure work piece quality. While we desire high $TP$s, we do not want \textit{unnecessary} replacements that cause production downtime, we therefore want lower $FP$s. The \textit{precision} metric is therefore an ideal performance metric. While we prefer a high precision, we do want a reasonably high recall i.e. do not want to miss replacement opportunities (low $FN$s). The F1-score (true harmonic mean of precision and recall) gives us a \textit{balanced} measure. Equation (\ref{eq_Fbeta}) provides a \textit{weighted} mechanism to provide a higher F-score for higher precision, by setting $\beta < 1.0$. For our evaluation we set $\beta$ to $0.5$.
-	
+	%% $$$ R1-3
+	\hlc{For a classification problem, the choice of precision versus recall will depend on the industry and application}. Timely replacements, $TP$, ensure work piece quality \hlc{while still maintaining minimal production downtime. Precision is driven by lower $FP$s i.e. reducing unnecessary replacements}. While we prefer a high precision, we do want a reasonably high recall \hlc{such as in several critical industrial environments, a higher recall is preferred where failing to replace the tool can lead to serious consequences, demanding lower $FN$s.} \hlc{Depending on the industrial application one can use a \textit{weighted} F1-score equation} (\ref{eq_Fbeta}) \hlc{that is oriented toward precision or recall}. For high precision applications set a $\beta < 1.0$; \hlc{for applications demanding higher recall, set a $\beta > 1.0$.} For \hlc{this research} we set $\beta$ to $0.5$ and \hlc{suggest setting $\beta$ to $2.0$ for applications where recall is critical}.
+		
 	\begin{equation}
 		F_{\beta} = (1+\beta^2) \cdot \frac{(Pr \times Rc)}{(\beta^2 \cdot Pr + Rc)}
 		\label{eq_Fbeta}
 	\end{equation}
-	
-	
 	
 	\section{Results}\label{sec_Results}
 	We present the summarized results in this section accompanied by commentary referring to detailed results made available in Appendix \ref{apx}. Since there are several tables and figures, for reference, we created a cross-linked Table \ref{tbl_ref-results}. Generally, \textcolor{dblue}{blue} text is used in tables to highlight prominent values. Summary performance and F$_\beta$0.5 plots accompany tables to assist in visualizing the comparative performance. The F$_\beta$0.5 plots show \textit{individual} performance over ten rounds of training-validation and help infer training stability. Similar plots for precision, recall and F1 have been relegated to Appendix \ref{apx}.
@@ -574,8 +573,6 @@
 				\end{tabular}}
 		\label{tbl_OverallSummary}
 	\end{table}		
-	
-	
 	
 	\begin{figure}[hbt!]
 		\centering
