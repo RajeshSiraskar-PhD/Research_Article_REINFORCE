@@ -207,7 +207,7 @@
 	\end{equation}
 	
 	\section{Methodology}\label{sec_Method}
-	%% $$$ R2-9	
+	%% $$$ R2-9
 	\hlc{This empirical study was undertaken after seeing preliminary encouraging results of the simple implementation of REINFORCE against the more advanced algorithms. Our study broadly follows the methodology outlined in}  \cite{Bouchrika2024, Emerald2021}, \hlc{ and is based on the original \textit{empirical cycle} proposed by Adriaan D De Groot} \cite{DeGroot1969}.
 	
 	\hlc{Using an exploratory research approach to arrive at a hypothesis} \cite{Politzer2021}, \hlc{we built an experimentation set-up, collected data, systematically analyzed it and tabled our observations and using abductive reasoning present some reasons for the behavior we observed.}	
@@ -226,7 +226,7 @@
 	\textbf{A.D. de Groots empirical cycle}:[3]
 	\begin{enumerate}
 		\item Observation: REINFORCE performs better on the predictive maintenance  problem.
-		\item Induction: Formulate a high-level hypothesis.			
+		\item Induction: Formulate a high-level hypotheses, as per  (\ref{eq_Hypothesis}) ($H_0: \mu_{RF} - \mu_{AA} = 0; H_a: \mu_{RF} - \mu_{AA} > 0$).			
 		\item Deduction: Design a set of experiments to test this hypothesis.
 		\item Testing: Conduct the experiments and collect data.
 		\item Evaluation: Evaluate the data and present the results of the experiments with interpretation based on abductive reasoning, that is the most reasonable explanation for the observation.
@@ -804,42 +804,6 @@
 		\label{fig_tr-time}
 	\end{figure}
 	
-	\subsection{\hlc{Sensitivity analysis of hyperparameters on the REINFORCE algorithm}}
-		
-	\hlc{RL algorithms are known to be extremely sensitive to hyperparameter and network architecture settings,} \cite{henderson2018deep, andrychowicz2021matters}. \hlc{Recent research on how RL hyperparameters should be tuned } \cite{Eimer2023AutoRL}, \hlc{is a significant contribution to the RL field.
-		
-	We analyzed the sensitivity of REINFORCE to hyperparameters via experiments. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the network activation functions for study}. 
-	
-	\begin{figure}[hbt!]
-		\centering
-		\includegraphics[width=0.6\linewidth]{SA_Gamma_0p95_ReLU.pdf}  
-		\caption{Training time, averaged over 10 rounds and all 15 variants.}
-		\label{fig_1}
-	\end{figure}
-	%trim=left botm right top
-	\begin{figure}[hbt!]
-		\centering
-		\fbox{\includegraphics[clip, trim=1.75cm 17.5cm 5.25cm 2.5cm, width=0.5\textwidth]{TimeStudy_Gamma.pdf}}
-		\caption{Training time - GAMMA.}
-		\label{fig_2}
-	\end{figure}
-	
-		\begin{figure}[hbt!]
-		\centering
-		\fbox{\includegraphics[clip, trim=1.75cm 17cm 5.25cm 2.75cm, width=0.5\textwidth]{TimeStudy_LR.pdf}}
-		\caption{Training time - LR.}
-		%\label{fig_2}
-	\end{figure}
-	
-		\begin{figure}[hbt!]
-		\centering
-		\fbox{\includegraphics[clip, trim=1.75cm 8.2cm 8.75cm 1.75cm, width=0.5\textwidth]{TimeStudy_CostBenefitAnalysis.pdf}}
-		\caption{Training time COST BENEFIT.}
-		%\label{fig_2}
-	\end{figure}
-	
-	
-	
 	\section{Discussion}\label{sec_Discussion}
 	In this study we use the raw data, with no feature engineering. This is in tune with the ``untuned'' algorithms concept. Sophisticated feature engineering techniques exist, allowing for superior results; for example for a similar milling machine PdM problem, \cite{sayyad2023} used time and frequency based techniques such as Fourier and wavelet transforms. With AutoRL one could automate such feature engineering techniques, followed by automated selection of significant features.
 	
@@ -848,10 +812,6 @@
 	Both \cite{duan2016benchmarking} and \cite{zhang2021convergence} studied the behavior on multiple OpenAI Gym environments, while \cite{peck2019} provide empirical results using MuJuCo. \cite{duan2016benchmarking} observe that, despite its simplicity it is an effective algorithm in optimizing policies based on deep neural networks. On the other hand, their empirical study concluded that REINFORCE is occasionally trapped in premature convergence to local optima. REINFORCE suffers from high variance \cite{peck2019} and converges very slowly when it does. High variance implies that a large sample of environment interactions are needed to obtain a reasonable approximation of the actual gradient. 
 	
 	\cite{zhang2021sample} provide the first known global convergence and sample efficiency results for the REINFORCE algorithm. Their study involved controlling the number of ``bad'' episodes as well as applying a ``doubling'' trick for studying the global convergence. Interestingly our training rounds resulted in multiple situations of ``zero'' performance (``bad'' episodes) for REINFORCE (18 instances) as also for Stable-Baseline's A2C implementation (12 instances); DQN and PPO did not show any occurrences.
-	
-	%% $$$ R1-1
-	\textcolor{red}{Sensitivity Analysis:}
-	\hlc{Sensitivity of the REINFORCE algorithm to hyperparameters was analyzed via experiments in {\textcolor{red}{Section}}. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the activation for study}. 
 	
 	There could be two possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \cite{duan2016benchmarking} observed that \textit{even} with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did.
 	
