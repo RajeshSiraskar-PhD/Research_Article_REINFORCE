@@ -810,30 +810,36 @@
 		
 	We analyzed the sensitivity of REINFORCE to hyperparameters via experiments. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the network activation functions for study}. 
 	
-	\begin{figure}[hbt!]
-		\centering
-		\includegraphics[width=0.6\linewidth]{SA_Gamma_0p95_ReLU.pdf}  
-		\caption{Training time, averaged over 10 rounds and all 15 variants.}
-		\label{fig_1}
+	\begin{figure}
+		\centering	
+		\subfigure[\hlc{Discount factor  $\gamma$=0.90}]{\label{fig_SA_G90_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p9_ReLU.pdf}}
+		\subfigure[\hlc{Discount factor  $\gamma$=0.95}]{\label{fig_SA_G95_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p95_ReLU.pdf}}
+		\subfigure[\hlc{Discount factor  $\gamma$=0.99}]{\label{fig_SA_G99_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p99_ReLU.pdf}}		
+		\caption{\hlc{Impact of changing learning rates and discount factor $\gamma$ for a REINFORCE policy network with ReLU activation.}}
+		\label{fig_SA_LR_Relu}
 	\end{figure}
+	
+	\begin{figure}
+		\centering	
+		\subfigure[\hlc{Discount factor $\gamma$=0.90}]{\label{fig_SA_G90_T}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p9_Tanh.pdf}}
+		\subfigure[\hlc{Discount factor $\gamma$=0.95}]{\label{fig_SA_G95_T}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p95_Tanh.pdf}}
+		\subfigure[\hlc{Discount factor $\gamma$=0.99}]{\label{fig_SA_G99_T}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p99_Tanh.pdf}}		
+		\caption{\hlc{Impact of changing learning rates and discount factor $\gamma$ for a REINFORCE policy network with Tanh activation.}}
+		\label{fig_SA_LR_Tanh}
+	\end{figure}
+	
 	%trim=left botm right top
+	\begin{figure}
+		\centering
+		\subfigure[\hlc{Impact of learning rate}]{\label{fig_SA_TT_LR}\includegraphics[clip, trim=1.75cm 17cm 5.25cm 2.75cm, width=0.475\textwidth]{TimeStudy_LR.pdf}}
+		\subfigure[\hlc{Impact of discount factor $\gamma$}]{\label{fig_SA_TT_G}\includegraphics[clip, trim=1.75cm 17.5cm 5.25cm 2.15cm, width=0.475\textwidth]{TimeStudy_Gamma.pdf}}
+		\caption{\hlc{Impact of learning rate and discount factor $\gamma$ on the time to train a REINFORCE model.}}
+		\label{fig_SA_TrainingTime}
+	\end{figure}
+	
 	\begin{figure}[hbt!]
 		\centering
-		\fbox{\includegraphics[clip, trim=1.75cm 17.5cm 5.25cm 2.5cm, width=0.5\textwidth]{TimeStudy_Gamma.pdf}}
-		\caption{Training time - GAMMA.}
-		\label{fig_2}
-	\end{figure}
-	
-		\begin{figure}[hbt!]
-		\centering
-		\fbox{\includegraphics[clip, trim=1.75cm 17cm 5.25cm 2.75cm, width=0.5\textwidth]{TimeStudy_LR.pdf}}
-		\caption{Training time - LR.}
-		%\label{fig_2}
-	\end{figure}
-	
-		\begin{figure}[hbt!]
-		\centering
-		\fbox{\includegraphics[clip, trim=1.75cm 8.2cm 8.75cm 1.75cm, width=0.5\textwidth]{TimeStudy_CostBenefitAnalysis.pdf}}
+		\includegraphics[clip, trim=1.75cm 8.2cm 8.75cm 1.75cm, width=0.7\textwidth]{TimeStudy_CostBenefitAnalysis.pdf}
 		\caption{Training time COST BENEFIT.}
 		%\label{fig_2}
 	\end{figure}
