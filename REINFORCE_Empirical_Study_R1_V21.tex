@@ -64,10 +64,10 @@
 \definecolor{ltgray}{gray}{0.93}
 \definecolor{dblue}{rgb}{0.20, 0.30, 1.0}
 
-\newcommand{\hlc}[2][cyan!17]{{\colorlet{foo}{#1} \sethlcolor{foo}\hl{#2}}}
+\newcommand{\hlc}[2][cyan!17]{{\colorlet{foo}{#1}\sethlcolor{foo}\hl{#2}}}
 \makeatletter
 \def\SOUL@hlpreamble{%
-	\setul{}{3ex}% default is 2.5ex
+	\setul{}{2.8ex}% default is 2.5ex
 	\let\SOUL@stcolor\SOUL@hlcolor
 	\SOUL@stpreamble
 }
@@ -218,35 +218,23 @@
 	
 	\section{Methodology}\label{sec_Method}
 	%% $$$ R2-9	
-	\hlc{We undertook this systematic empirical after the preliminary encouraging results of REINFORCE. Our study broadly follows the exploratory research methodology outlined in} \cite{Bouchrika2024, Emerald2021}, \hlc{and is based on the original \textit{empirical cycle} proposed by Adriaan D De Groot,} \cite{DeGroot1969}. \hlc{Exploratory research approach is often used to arrive at a broad hypothesis} \cite{Politzer2021}. \hlc{We built an experimentation set-up, collected data, systematically analyzed it and tabled our observations, finally employing abductive reasoning to present some reasons for the behavior we observed.}	
+	\hlc{We undertook this systematic empirical after the preliminary encouraging results of REINFORCE. Our study broadly follows the exploratory research methodology outlined in} \cite{Bouchrika2024, Emerald2021, Gamper2017}, \hlc{and is based on the original \textit{empirical cycle} proposed by Adriaan D De Groot,} \cite{DeGroot1969}. \hlc{Exploratory research approach is often used to arrive at a broad hypothesis} \cite{Politzer2021}. \hlc{We built an experimentation set-up, collected data, systematically analyzed it and tabled our observations, finally employing abductive reasoning to present some reasons for the behavior we observed}
 	
-	\textbf{Emerald} --- 
-	Typically, empirical research embodies the following elements:
-	
-	A research question, which will determine research objectives.
-	A particular and planned design for the research, which will depend on the question and which will find ways of answering it with appropriate use of resources.
-	The gathering of primary data, which is then analysed.
-	A particular methodology for collecting and analysing the data, such as an experiment or survey.
-	The limitation of the data to a particular group, area or time scale, known as a sample: for example, a specific number of employees of a particular company type, or all users of a library over a given time scale. The sample should be somehow representative of a wider population.
-	The ability to recreate the study and test the results. This is known as reliability.
-	The ability to generalise from the findings to a larger sample and to other situations.
-	
-	\textbf{A.D. de Groots empirical cycle}:[3]
-	\begin{enumerate}
-		\item Observation: REINFORCE performs better on the predictive maintenance  problem.
-		\item Induction: Formulate a high-level hypothesis.			
-		\item Deduction: Design a set of experiments to test this hypothesis.
-		\item Testing: Conduct the experiments and collect data.
-		\item Evaluation: Evaluate the data and present the results of the experiments with interpretation based on abductive reasoning, that is the most reasonable explanation for the observation.
-	\end{enumerate}
-	
-	
-	\begin{enumerate}
-		\item \textcolor{red}{study what? avg rewards, robustess std dev, CI, sensitivyt to hyperparms, training time}
-		\item \textcolor{red}{Based on the patterns that emerged we built a hypothesis - that could be statistically verified  Inductive reasoning was applied onto the sensitivity analysis studies we undertook.}
-		\item \textcolor{red}{observation of specific patterns in order to conclude analogous research finding - cite GERMAN here } --\cite{Germann2023} \textcolor{red}{as in EARLIER RL RESEARCHS HENDERSON etc }
-		\item  \textcolor{red}{NOISE as suggested in} \cite{Eimer2023AutoRL}
-	\end{enumerate}
+	\begin{table}[hbtp!]
+		\rowspace{1.5}
+		\caption{\hlc{Our research method steps, mapped to the standard empirical cycle of} \cite{DeGroot1969}}%\label{tab1}%
+		{\begin{tabular}[h]{L{2cm} L{7cm} L{3.5cm}}
+				\arrayrulecolor{black!40}\toprule
+				\textbf{\hlc{Empirical cycle phase}}&\textbf{\hlc{Our process step}}&\textbf{\hlc{Reference}}\\ \midrule
+				\hlc{Observation}&\hlc{Preliminary experiments demonstrated good results for the REINFORCE on the predictive maintenance problem}.&\\
+				\hlc{Induction}&\hlc{Formulate a high-level hypothesis based on the preliminary observations. Use model performance metrics - precision recall and F1-score}. & \makecell[l]{$H_0: \mu_{RF}-\mu_{AA}=0.$\\$H_a: \mu_{RF}-\mu_{AA} > 0$}\\
+				\hlc{Deduction} & \hlc{Design and build an experimentation set-up. Design a set of experiments to test hypothesis}.&Implementation section \ref{sec_Hypothesistesting}\\
+				\hlc{Testing} & \hlc{Conduct the experiments and collect data}.& Experiment results (section \ref{sec_Results}), Sensitivity analysis (section \ref{sec_SA})\\
+				\hlc{Evaluation} & \hlc{Evaluate and present the test results. Table the interpretations based on abductive reasoning}.&Results and discussion sections \ref{sec_Results}, \ref{sec_Discussion}\\		
+				\bottomrule
+		\end{tabular}}
+		\label{tbl_method}
+	\end{table}
 	
 	\subsection{Implementation details}\label{sec_Implementation}
 	RL requires an environment to function. We built a custom ``milling'' environment for the agent to learn a policy for tool replacement. Fig. \ref{fig_environments} shows the stepped approach used to generate the fifteen environments, of varying complexity. We first describe the simulation-based environment followed by the real-data based family, describing the child-variants along the way.
@@ -758,7 +746,7 @@
 		\label{fig_supermodels}
 	\end{figure}
 	
-	\subsection{Hypothesis testing}
+	\subsection{Hypothesis testing}\label{sec_Hypothesistesting}
 	We undertake a statistical analysis of the results, postulated by the hypothesis (\ref{eq_Hypothesis}), \hlc{where the subscripts \textit{RF} and \textit{AA} stand for REINFORCE and ``advanced algorithms'' respectively.} Table \ref{tbl_ttest} shows the result of a one-sided, two-sample t-test, conducted for a significance level $\alpha=0.05$. Sample size of the test are mentioned against each category\footnote{What does a single data point indicate?: Consider the ``Simulated'' category -- 10 training rounds $\times$ 10 test rounds $\times$ 3 noise settings = 300 sample points. Note that a single test round is conducted with 40 randomly sampled wear datapoints and therefore 300 samples = 300 $\times$40 i.e. 12,000 samples of wear data. Similarly, for the real-data univariate state: 3 datasets $\times$ 10 training rounds $\times$ 10 test rounds $\times$3 noise settings = 900 sample points.}.
 	\begin{equation}
 		\left.\begin{aligned}
@@ -805,7 +793,7 @@
 	\end{table}
 	
 	%% $$$ Sensitivity analysi
-	\subsection{\hlc{Sensitivity analysis of hyperparameters on the REINFORCE algorithm}}
+	\subsection{\hlc{Sensitivity analysis of hyperparameters on the REINFORCE algorithm}}\label{sec_SA}
 		
 	\hlc{RL algorithms are known to be extremely sensitive to hyperparameter and network architecture settings,} \cite{henderson2018deep, andrychowicz2021matters}. \cite{Eimer2023AutoRL} \hlc{show that the often overlooked
 	hyperparameters, such as the discount factor $\gamma$, can significantly impact the RL algorithm`s success}.
