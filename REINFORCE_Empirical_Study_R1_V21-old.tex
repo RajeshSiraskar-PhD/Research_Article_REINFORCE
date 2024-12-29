@@ -52,6 +52,7 @@
 
 % Macros
 \algnewcommand{\LineComment}[1]{\State \(\triangleright\) #1}
+\newcommand{\hlc}[2][cyan!17]{{\colorlet{foo}{#1} \sethlcolor{foo}\hl{#2}}}
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
@@ -64,14 +65,6 @@
 \definecolor{ltgray}{gray}{0.93}
 \definecolor{dblue}{rgb}{0.20, 0.30, 1.0}
 
-\newcommand{\hlc}[2][cyan!17]{{\colorlet{foo}{#1} \sethlcolor{foo}\hl{#2}}}
-\makeatletter
-\def\SOUL@hlpreamble{%
-	\setul{}{3ex}% default is 2.5ex
-	\let\SOUL@stcolor\SOUL@hlcolor
-	\SOUL@stpreamble
-}
-\makeatother
 
 \begin{document}
 	
@@ -91,15 +84,12 @@
 	
 	\abstract{
 		Reinforcement Learning (RL) is a biologically inspired, autonomous (self-learning) machine learning (ML) method. RL algorithms can help generate optimal predictive maintenance (PdM) policies for complex industrial systems. However, these algorithms are extremely sensitive to hyperparameter tuning and network architecture, and this is where automated RL frameworks (AutoRL) can offer a platform to encourage industrial practitioners to apply RL to their problems. AutoRL applied to PdM has yet to be studied. Aimed at practitioners unfamiliar with complex RL tuning, we undertake an empirical study to understand \textit{untuned} RL algorithms for generating optimal tool replacement policies for milling machines.
-		
-		\textcolor{red}{\hlc{contribution --- MENTION SENSITIVITY ANALYSIS OF HPs on this domain is NOT done}}
-		
 		We compare a na\"ive implementation of REINFORCE against the policies of industry-grade implementations of three advanced algorithms -- Deep Q-Network (DQN), Advantage Actor-Critic (A2C), and Proximal Policy Optimization (PPO). Our broad goal was to study model performance under four scenarios: (1) simulated tool-wear data, (2) actual tool-wear data (benchmark IEEE\textit{DataPort} PHM Society datasets), (3) univariate state with added noise levels and a random chance of break-down, and finally (4) complex multivariate state. Across 15 environment variants, REINFORCE models demonstrated higher tool replacement precision and F1 of 0.687/0.609 against 0.449/0.442 for A2C, 0.418/0.374 for DQN, and 0.472/0.345 for PPO, while demonstrating lower variability. Comparing the best \textit{auto-selected} model, over ten training rounds produced unusually wider performance gaps with the REINFORCE precision/F1 at 0.884/0.873. The best A2C, DQN, and PPO models produced 0.520/0.639, 0.651/0.740, and 0.558/0.580, respectively. Our findings, surprisingly, indicate that the computationally lightweight REINFORCE performs significantly well for this particular problem and forms a small step toward AutoRL for PdM.}	
 	\keywords{Reinforcement Learning, predictive maintenance, REINFORCE}
 	
 	\maketitle
 	
-	\section*{\hlc{Article Highlights}}
+	\section*{\hlc {Article Highlights}}
 	\begin{enumerate}
 		\item \hlc{Contributes to the broader goal of AutoRL (Automated Reinforcement Learning) for Predictive Maintenance}
 		\item \hlc{Research for practitioners with limited hyperparameter tuning expertise -- focusing on practical industry needs}
@@ -241,11 +231,11 @@
 	\end{enumerate}
 	
 	
+	
 	\begin{enumerate}
 		\item \textcolor{red}{study what? avg rewards, robustess std dev, CI, sensitivyt to hyperparms, training time}
 		\item \textcolor{red}{Based on the patterns that emerged we built a hypothesis - that could be statistically verified  Inductive reasoning was applied onto the sensitivity analysis studies we undertook.}
 		\item \textcolor{red}{observation of specific patterns in order to conclude analogous research finding - cite GERMAN here } --\cite{Germann2023} \textcolor{red}{as in EARLIER RL RESEARCHS HENDERSON etc }
-		\item  \textcolor{red}{NOISE as suggested in} \cite{Eimer2023AutoRL}
 	\end{enumerate}
 	
 	\subsection{Implementation details}\label{sec_Implementation}
@@ -293,8 +283,7 @@
 	In practice, state variables are often normalized to improve stability and convergence. Both the simulated and real data was normalized using min-max scaling such that the tool wear and other state features, $x \in [0,\;1] \subset \mathbb{R} $. We will see next how this allows adding white noise of similar magnitudes across different PHM datasets.
 	
 	\subsubsection*{Adding noise and chance of break-down}
-	%% $$$ R2-9
-	\hlc{Study of noise in RL settings is of prime importance, as suggested by} \cite{Eimer2023AutoRL}. Fig. \ref{fig_noise} shows the effect of adding two levels of noise; a ``low'' level by adding Gaussian noise of order $-3$, $(0.0, 0.001]$ and ``high'' of order $-2$, $(0.0, 0.01]$. Since the tool wear is less than 0.24 mm, this adds significant perturbations as seen in Fig. \ref{fig_LBD} and \ref{fig_HBD}. The noise affects the tool replacement decision (solid blue line) around the replacement threshold (dotted red line). The \textit{human} preventive maintenance policy replaces the tool if the wear exceeds the threshold and this decision boundary oscillates due to the noise. One can see that in the case of no noise (Fig. \ref{fig_NBD}), the decision boundary is clean.
+	Fig. \ref{fig_noise} shows the effect of adding two levels of noise; a ``low'' level by adding Gaussian noise of order $-3$, $(0.0, 0.001]$ and ``high'' of order $-2$, $(0.0, 0.01]$. Since the tool wear is less than 0.24 mm, this adds significant perturbations as seen in Fig. \ref{fig_LBD} and \ref{fig_HBD}. The noise affects the tool replacement decision (solid blue line) around the replacement threshold (dotted red line). The \textit{human} preventive maintenance policy replaces the tool if the wear exceeds the threshold and this decision boundary oscillates due to the noise. One can see that in the case of no noise (Fig. \ref{fig_NBD}), the decision boundary is clean.
 	
 	\begin{figure}
 		\centering	
@@ -803,15 +792,12 @@
 		\end{tabular}}
 		\label{tbl_ttest}
 	\end{table}
-	
-	%% $$$ Sensitivity analysi
+		
 	\subsection{\hlc{Sensitivity analysis of hyperparameters on the REINFORCE algorithm}}
 		
-	\hlc{RL algorithms are known to be extremely sensitive to hyperparameter and network architecture settings,} \cite{henderson2018deep, andrychowicz2021matters}. \cite{Eimer2023AutoRL} \hlc{show that the often overlooked
-	hyperparameters, such as the discount factor $\gamma$, can significantly impact the RL algorithm`s success}.
-	
-	\hlc{As a simple algorithm, REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the network activation functions - thus covering hyperparameters as well as network architecture. Recent research on how RL hyperparameters should be tuned by} \cite{Eimer2023AutoRL}, \hlc{is a significant contribution to the RL field.}
-
+	\hlc{RL algorithms are known to be extremely sensitive to hyperparameter and network architecture settings,} \cite{henderson2018deep, andrychowicz2021matters}. \hlc{Recent research on how RL hyperparameters should be tuned } \cite{Eimer2023AutoRL}, \hlc{is a significant contribution to the RL field.
+		
+	We analyzed the sensitivity of REINFORCE to hyperparameters via experiments. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the network activation functions for study}. 
 	
 	\begin{figure}[hbt!]
 		\centering	
@@ -855,6 +841,7 @@
 		%\label{fig_2}
 	\end{figure}
 	
+	
 	\section{Discussion}\label{sec_Discussion}
 	In this study we use the raw data, with no feature engineering. This is in tune with the ``untuned'' algorithms concept. Sophisticated feature engineering techniques exist, allowing for superior results; for example for a similar milling machine PdM problem, \cite{sayyad2023} used time and frequency based techniques such as Fourier and wavelet transforms. With AutoRL one could automate such feature engineering techniques, followed by automated selection of significant features.
 	
@@ -867,8 +854,6 @@
 	%% $$$ R1-1
 	\textcolor{red}{Sensitivity Analysis:}
 	\hlc{Sensitivity of the REINFORCE algorithm to hyperparameters was analyzed via experiments in {\textcolor{red}{Section}}. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the activation for study}. 
-	
-	\hlc{In} \cite{Eimer2023AutoRL}, \citeauthor{Eimer2023AutoRL} \hlc{highlight the importance of our research by stating that it is especially important for ``as-of-yet unexplored domains''}
 	
 	There could be two possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \cite{duan2016benchmarking} observed that \textit{even} with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did.
 	
