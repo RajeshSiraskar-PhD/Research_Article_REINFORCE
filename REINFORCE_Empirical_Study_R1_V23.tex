@@ -1,7 +1,8 @@
 %% Discover Applied Sciences - Revision 1
 %% 19-Dec-2024: Highlights
 %% 28-Dec-2024: V1 - Begin comments. V2 - Methodology overhaul 
-%% 29-Dec-2024: V2.1
+%% 29-Dec-2024: V2.1. V.2.2: CI tables
+%% 30-Dec: V2.3 - Dataset variability
 
 \documentclass[referee, sn-mathphys-num]{sn-jnl}
 %%%% Standard Packages
@@ -199,7 +200,7 @@
 		J^\text{TRPO} (\theta) = \mathbb{E} [ r(\theta) \hat{A}_{\theta_\text{old}}(s, a) ]
 	\end{equation}
 	
-	PPO extends TRPO by additionally imposing a regional constraint. It prevents large updates by forcing the ratio $r(\theta)$ to stay within a small interval $[1-\epsilon, 1+\epsilon]$, around $1.0$, by use of a hyper-parameter $\epsilon$.
+	PPO extends TRPO by additionally imposing a regional constraint. It prevents large updates by forcing the ratio $r(\theta)$ to stay within a small interval $[1-\epsilon, 1+\epsilon]$, around $1.0$, by use of a hyperparameter $\epsilon$.
 	\begin{equation}\label{eq_PPO}
 		J^{CLIP} (\theta) = \mathbb{E}_t \; [ \; min (r_t(\theta) A^{\pi_{\theta_{old}}}_t, clip(r_t(\theta), 1-\epsilon, 1+\epsilon) A^{\pi_{\theta_{old}}}_t)]
 	\end{equation}
@@ -269,14 +270,25 @@
 	We used the parameter values provided in the paper $a=0.08257$, $b1=0.3342$ and $b2=0.03147$ to simulate 120 data points. Fig. \ref{fig_simulated} shows the tool wear simulated using \eqref{eq_Dasic}, with the red dotted-line indicating the wear threshold beyond which tool is replaced. This provided the mechanism to simulate the basic variant of tool-wear based \textbf{univariate state}. We then added two further levels of increased complexity using noise and a chance of breakdown, giving us three distinct environments. 
 	
 	\subsubsection*{Actual tool wear data}\label{sec_PHMdata}
-	The IEEE\textit{DataPort} hosts the ``2010 PHM Society'' tool-wear data obtained from a high-speed CNC milling machine, \cite{PHM-dataset}. C01, C04 and C06 datasets are suggested as benchmarks to be used for machine learning research and were the ones we used\footnote{In the article, we often refer to these datasets as ``PHM-'' data.}. The data is from seven sensors -- dynamometer measuring forces in X, Y and Z dimensions, measured in $N$; accelerometer measuring vibration in X, Y and Z dimensions, measured in $g$ and finally acoustic emission data as AE-RMS, in $V$. A separate file contains tool wear data in $mm$. Figures \ref{fig_C01}, \ref{fig_C04} and \ref{fig_C06} show the tool wear for the three datasets. We use real data to create two state designs, an univariate state consisting of only the tool wear and a \textbf{multivariate} state designed using all the additional seven sensor values. Just as we did for the simulated case, the complexity of the univariate state is increased using two levels of noise and break-down parameters. The multivariate state is complex in itself. An indicative plot of PHM-C06 feature data, Fig. \ref{fig_PHMMSdata}, demonstrates the inherent feature complexity and we therefore use the natural (without noise) form.
+	The IEEE\textit{DataPort} hosts the ``2010 PHM Society'' tool-wear data obtained from a high-speed CNC milling machine, \cite{PHM-dataset}. C01, C04 and C06 datasets are suggested as benchmarks to be used for machine learning research and were the ones we used\footnote{In the article, we often refer to these datasets as ``PHM-'' data.}. The data is from seven sensors -- dynamometer measuring forces in X, Y and Z dimensions, measured in $N$; accelerometer measuring vibration in X, Y and Z dimensions, measured in $g$ and finally acoustic emission data as AE-RMS, in $V$. A separate file contains tool wear data in $mm$. Figures \ref{fig_C01}, \ref{fig_C04} and \ref{fig_C06} show the tool wear for the three datasets. We use real data to create two state designs, an univariate state consisting of only the tool wear and a \textbf{multivariate} state designed using all the additional seven sensor values. Just as we did for the simulated case, the complexity of the univariate state is increased using two levels of noise and break-down parameters. The multivariate state is complex in itself. \hlc{Fig. {\ref{fig_PHMDataVariability}} shows a comparison of the dataset features along with the intrinsic variability. We selected these datasets for this inherent variability and this shows up as variation in performance across the datasets, as we shall see in the {\ref{sec_Results}} section later}. An indicative plot of PHM-C06 feature data, Fig. \ref{fig_PHMMSdata}, demonstrates the inherent feature complexity and we therefore use the natural (without noise) form. 
 	
+	%% $$$ R1-6 10 Data Variability
+	\begin{figure}[hbt!]
+		\centering	
+		\subfigure[\hlc{PHM-C01 dataset}]{\includegraphics[width=0.325\textwidth]{C01_Features.pdf}}
+		\subfigure[\hlc{PHM-C04 dataset}]{\includegraphics[width=0.325\textwidth]{C04_Features.pdf}}
+		\subfigure[\hlc{PHM-C06 dataset}]{\includegraphics[width=0.325\textwidth]{C06_Features.pdf}}
+		\caption{\hlc{Feature variability across datasets.}}
+		\label{fig_PHMDataVariability}
+	\end{figure}
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=0.7\textwidth]{PHMMSdata.pdf}  
 		\caption{Indicative plot of PHM-C06 multivariate data, showcasing inherent feature complexity. Y-axis indicate magnitude of sensor values. X-axis is number of data-points.}
 		\label{fig_PHMMSdata}
 	\end{figure} 
+	
+
 	
 	In practice, state variables are often normalized to improve stability and convergence. Both the simulated and real data was normalized using min-max scaling such that the tool wear and other state features, $x \in [0,\;1] \subset \mathbb{R} $. We will see next how this allows adding white noise of similar magnitudes across different PHM datasets.
 	
@@ -405,8 +417,8 @@
 		\end{algorithmic}
 	\end{algorithm}
 	
-	\subsubsection*{Network architecture and basic hyper-parameters}
-	Stable-Baselines3 (SB3) provides robust open source implementations of many RL algorithms, \cite{SB3-paper}. As of 20-Sep-2024, 13 algorithms have been implemented however REINFORCE has \textit{not} been implemented, \cite{SB3-algorithms}. For this research we use the \textit{default} SB3 implementations of DQN, A2C and PPO and compare its performance to a custom implementation of the REINFORCE algorithm using a very simple network architecture. Table \ref{tbl_network-architecture} shows a comparison of the architecture and the basic common hyper-parameters.
+	\subsubsection*{Network architecture and basic hyperparameters}
+	Stable-Baselines3 (SB3) provides robust open source implementations of many RL algorithms, \cite{SB3-paper}. As of 20-Sep-2024, 13 algorithms have been implemented however REINFORCE has \textit{not} been implemented, \cite{SB3-algorithms}. For this research we use the \textit{default} SB3 implementations of DQN, A2C and PPO and compare its performance to a custom implementation of the REINFORCE algorithm using a very simple network architecture. Table \ref{tbl_network-architecture} shows a comparison of the architecture and the basic common hyperparameters.
 	
 	\begin{table}
 		\rowspace{1.3}
@@ -520,6 +532,9 @@
 		\label{eq_Fbeta}
 	\end{equation}
 	
+	%% $$$ R1-6	CI
+	\hlc{Throughout the article we use 95\% confidence intervals (CI) to quantify the uncertainty of the metrics and provide an indication of the robustness. In the Results section {\ref{sec_Results}}, these are presented in the results tables (columns titled '95\% CI') and as error-bars in the accompanying plots.}
+	
 	\section{Results}\label{sec_Results}
 	We present the summarized results in this section accompanied by commentary referring to detailed results made available in Appendix \ref{apx}. Since there are several tables and figures, for reference, we created a cross-linked Table \ref{tbl_ref-results}. Generally, \textcolor{dblue}{blue} text is used in tables to highlight prominent values. Summary performance and F$_\beta$0.5 plots accompany tables to assist in visualizing the comparative performance. The F$_\beta$0.5 plots show \textit{individual} performance over ten rounds of training-validation and help infer training stability. Similar plots for precision, recall and F1 have been relegated to Appendix \ref{apx}.
 	
@@ -565,26 +580,7 @@
 	\end{table}
 	
 	\subsection{Overall performance}
-%	\begin{table}
-%		\rowspace{1.3}
-%		\caption{Model performance summary - averaged over all environments.}
-%		{\begin{tabular}{@{}l rr c rr c rr c rr@{}}
-%				\arrayrulecolor{black!40}\toprule
-%				& \multicolumn{2}{c}{Precision} & \phantom{i} & \multicolumn{2}{c}{Recall} & \phantom{i} & \multicolumn{2}{c}{F1-score} & \phantom{i} & \multicolumn{2}{c}{F$_\beta$0.5} \\
-%				\cmidrule{2-3} \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12} 
-%				
-%				&Mean &SD & &Mean &SD & &Mean &SD& &Mean & SD\\ \midrule
-%				
-%				A2C & 0.449 & 0.088 & &0.480 & 0.084 & & 0.442 & 0.070 & &0.436 &0.071 \\
-%				DQN & 0.418 & 0.185 & &0.504 & 0.032 & & 0.374 & 0.035 & &0.348 &0.058 \\
-%				PPO & 0.472 & 0.144 & &0.316 & 0.087 & & 0.345 & 0.091 & &0.393 &0.105 \\
-%				REINFORCE & \textcolor{dblue}{0.687} & 0.059 & &\textcolor{dblue}{0.629} & 0.051 & & \textcolor{dblue}{0.609} & 0.050 & &\textcolor{dblue}{0.631} &0.052 \\
-%				
-%				\bottomrule
-%		\end{tabular}}
-%		\label{tbl_OverallSummary}
-%	\end{table}
-		
+	% $$$: CI R1-6	
 	\begin{table}
 		\rowspace{1.3}
 		\caption{\hlc{Model performance summary - averaged over all environments.}}
@@ -593,9 +589,7 @@
 						\arrayrulecolor{black!40}\toprule
 						& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
 						\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
-						
-						&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule
-						
+						&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
 						A2C & 0.449 & 0.088 & \makecell{(0.443,\\ 0.455)} & &0.480 & 0.084 & \makecell{(0.474,\\ 0.485)} & & 0.442 & 0.070 & \makecell{(0.437,\\ 0.446)} & &0.436 &0.071 & \makecell{(0.431,\\ 0.440)} \\ \arrayrulecolor{gray!30} \midrule
 						DQN & 0.418 & 0.185 & \makecell{(0.406,\\ 0.430)} & &0.504 & 0.032 & \makecell{(0.502,\\ 0.506)} & & 0.374 & 0.035 & \makecell{(0.372,\\ 0.376)} & &0.348 &0.058 & \makecell{(0.344,\\ 0.351)} \\\midrule
 						PPO & 0.472 & 0.144 & \makecell{(0.463,\\ 0.482)} & &0.316 & 0.087 & \makecell{(0.310,\\ 0.321)} & & 0.345 & 0.091 & \makecell{(0.339,\\ 0.351)} & &0.393 &0.105 & \makecell{(0.386,\\ 0.400)} \\\midrule
@@ -621,26 +615,27 @@
 		\label{fig_FbetaOverall}
 	\end{figure}
 	
-	We now dig into the detailed metrics Appendix {\ref{apx}} - Table {\ref{tbl_DetailedMetrics}} to better understand the aggregated summary. The largest values are typeset in {\textcolor{dblue}{blue}}. And a quick visual glance shows the dominance of REINFORCE. The notable exceptions are the PHM C01 single-state and no-noise variant where A2C and DQN do better, followed by PHM C01 and PHM C06 univariate-state, low-noise variants where A2C performs better in every aspect and finally the PHM C04 and C06 multivariate variants where A2C again performs better on recall and which in turns drives the F1 score up. Barring these three complete cases and two cases where A2C recall was better, the REINFORCE performs best in ten variants and in two cases its precision, and therefore F$_\beta$0.5, is highest. This corroborates the overall performance observed in Table {\ref{tbl_OverallSummary}}. Finally, Fig. {\ref{fig_tr-overall}} shows that the stability across multiple rounds is evident for other metrics as well.
+	We now dig into the detailed metrics Appendix {\ref{apx}} - Table {\ref{tbl_DetailedMetrics}} to better understand the aggregated summary. The largest values are typeset in {\textcolor{dblue}{blue}}. And a quick visual glance shows the dominance of REINFORCE. The notable exceptions are the PHM C01 single-state and no-noise variant where A2C and DQN do better, followed by PHM C01 and PHM C06 univariate-state, low-noise variants where A2C performs better in every aspect and finally the PHM C04 and C06 multivariate variants where A2C again performs better on recall and which in turns drives the F1 score up. Barring these three complete cases and two cases where A2C recall was better, the REINFORCE performs best in ten variants and in two cases its precision, and therefore F$_\beta$0.5, is highest. This corroborates the overall performance observed in Table {\ref{tbl_OverallSummary}}. \hlc{As seen in Table {\ref{tbl_DetailedMetrics}} there are significant variations in performance across the datasets - for \textit{all} algorithms. One reason for this is by design -- the sample datasets we selected had noticeable variation between them, as we saw in Fig. {\ref{fig_PHMDataVariability}}}. Finally, Fig. {\ref{fig_tr-overall}} shows that the stability across multiple rounds is evident for other metrics as well.
 	
 	\subsection{Simulated environment}
-	\begin{table}
+	\begin{table} % $$$: CI R1-6
 		\rowspace{1.3}
-		\caption{Simulated environments - model performance summary.}
-		{\begin{tabular}{@{}l rr c rr c rr c rr@{}}
+		\caption{\hlc{Simulated environments - model performance summary.}}
+		{\begin{tabular}
+				{@{}l rrr c rrr c rrr c rrr@{}}
 				\arrayrulecolor{black!40}\toprule
-				& \multicolumn{2}{c}{Precision} & \phantom{i} & \multicolumn{2}{c}{Recall} & \phantom{i} & \multicolumn{2}{c}{F1-score} & \phantom{i} & \multicolumn{2}{c}{F$_\beta$0.5} \\
-				\cmidrule{2-3} \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12} 
-				
-				&Mean &SD & &Mean &SD & &Mean &SD& &Mean & SD\\ \midrule
-				A2C & 0.416 & 0.120 & &0.385 & 0.073 & & 0.363 & 0.072 & &0.373 &0.082 \\
-				DQN & 0.432 & 0.184 & &0.510 & 0.031 & & 0.374 & 0.034 & &0.351 &0.056 \\
-				PPO & 0.500 & 0.178 & &0.215 & 0.081 & & 0.285 & 0.099 & &0.370 &0.122 \\
-				REINFORCE & \textcolor{dblue}{0.806} & 0.040 & &\textcolor{dblue}{0.915} & 0.038 & & \textcolor{dblue}{0.841} & 0.035 & &\textcolor{dblue}{0.816} &0.037 \\
+				& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
+				\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
+				&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
+				A2C & 0.416 & 0.120 & \makecell{(0.408,\\ 0.423)} & &0.385 & 0.073 & \makecell{(0.380,\\ 0.390)} & & 0.363 & 0.072 & \makecell{(0.358,\\ 0.367)} & &0.373 &0.082 & \makecell{(0.368,\\ 0.379)} \\
+				DQN & 0.432 & 0.184 & \makecell{(0.420,\\ 0.443)} & &0.510 & 0.031 & \makecell{(0.508,\\ 0.512)} & & 0.374 & 0.034 & \makecell{(0.372,\\ 0.376)} & &0.351 &0.056 & \makecell{(0.347,\\ 0.354)} \\
+				PPO & 0.500 & 0.178 & \makecell{(0.488,\\ 0.511)} & &0.215 & 0.081 & \makecell{(0.209,\\ 0.220)} & & 0.285 & 0.099 & \makecell{(0.278,\\ 0.291)} & &0.370 &0.122 & \makecell{(0.362,\\ 0.378)} \\
+				REINFORCE & \textcolor{dblue}{0.806} & 0.040 & \makecell{(0.803,\\ 0.808)} & &\textcolor{dblue}{0.915} & 0.038 & \makecell{(0.913,\\ 0.918)} & & \textcolor{dblue}{0.841} & 0.035 & \makecell{(0.839,\\ 0.844)} & &\textcolor{dblue}{0.816} &0.037 & \makecell{(0.813,\\ 0.818)} \\		
 				\bottomrule
 		\end{tabular}}
 		\label{tbl_SimulatedEnv}
-	\end{table}
+	\end{table}		
+	
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=0.6\textwidth, trim={1.5cm 7cm 1cm 7cm}]{SimulatedPlot.pdf}  
@@ -656,24 +651,24 @@
 	\end{figure}
 	
 	\subsection{Real data - simple univariate environment}
-	\begin{table}
-		\rowspace{1.3}
-		\caption{Model performance summary - averaged over PHM-2010 environments with simple single-variable environment.}
-		{\begin{tabular}{@{}l rr c rr c rr c rr@{}}
-				\arrayrulecolor{black!40}\toprule
-				& \multicolumn{2}{c}{Precision} & \phantom{i} & \multicolumn{2}{c}{Recall} & \phantom{i} & \multicolumn{2}{c}{F1-score} & \phantom{i} & \multicolumn{2}{c}{F$_\beta$0.5} \\
-				\cmidrule{2-3} \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12} 
-				
-				&Mean &SD & &Mean &SD & &Mean &SD& &Mean & SD\\ \midrule
-				A2C & 0.447 & 0.077 & &0.477 & 0.091 & & 0.452 & 0.072 & &0.446 &0.070 \\
-				DQN & 0.419 & 0.179 & &0.507 & 0.032 & & 0.379 & 0.036 & &0.352 &0.057 \\
-				PPO & 0.450 & 0.146 & &0.314 & 0.082 & & 0.333 & 0.087 & &0.374 &0.102 \\
-				REINFORCE & \textcolor{dblue}{0.605} & 0.046 & &\textcolor{dblue}{0.603} & 0.046 & & \textcolor{dblue}{0.570} & 0.041 & &\textcolor{dblue}{0.576} &0.040 \\
-				
-				\bottomrule
-		\end{tabular}}
-		\label{tbl_PHMSS}
-	\end{table}
+	\begin{table} % $$$: CI R1-6
+	\rowspace{1.3}
+	\caption{\hlc{Model performance summary - averaged over PHM-2010 environments with simple single-variable environment.}}
+	{\begin{tabular}
+			{@{}l rrr c rrr c rrr c rrr@{}}
+			\arrayrulecolor{black!40}\toprule
+			& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
+			\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
+			&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
+			A2C & 0.447 & 0.077 & \makecell{(0.442,\\ 0.452)} & &0.477 & 0.091 & \makecell{(0.471,\\ 0.483)} & & 0.452 & 0.072 & \makecell{(0.448,\\ 0.457)} & &0.446 &0.070 & \makecell{(0.442,\\ 0.451)} \\
+			DQN & 0.419 & 0.179 & \makecell{(0.408,\\ 0.431)} & &0.507 & 0.032 & \makecell{(0.505,\\ 0.509)} & & 0.379 & 0.036 & \makecell{(0.376,\\ 0.381)} & &0.352 &0.057 & \makecell{(0.348,\\ 0.355)} \\
+			PPO & 0.450 & 0.146 & \makecell{(0.440,\\ 0.459)} & &0.314 & 0.082 & \makecell{(0.309,\\ 0.319)} & & 0.333 & 0.087 & \makecell{(0.327,\\ 0.339)} & &0.374 &0.102 & \makecell{(0.367,\\ 0.381)} \\
+			REINFORCE & \textcolor{dblue}{0.605} & 0.046 & \makecell{(0.602,\\ 0.608)} & &\textcolor{dblue}{0.603} & 0.046 & \makecell{(0.600,\\ 0.606)} & & \textcolor{dblue}{0.570} & 0.041 & \makecell{(0.567,\\ 0.572)} & &\textcolor{dblue}{0.576} &0.040 & \makecell{(0.574,\\ 0.579)} \\		
+			\bottomrule
+	\end{tabular}}
+	\label{tbl_PHMSS}
+	\end{table}		
+
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=0.6\textwidth, trim={1.5cm 7cm 1cm 7cm}]{PHMSSPlot.pdf}  
@@ -689,19 +684,19 @@
 	\end{figure}
 	
 	\subsection{Real data - complex multivariate state}
-	\begin{table}
+	\begin{table} % $$$: CI R1-6
 		\rowspace{1.3}
-		\caption{Model performance summary - averaged over PHM-2010 environments with complex multivariate environment.}
-		{\begin{tabular}{@{}l rr c rr c rr c rr@{}}
+		\caption{\hlc{Model performance summary - averaged over PHM-2010 environments with complex multivariate environment.}}
+		{\begin{tabular}
+				{@{}l rrr c rrr c rrr c rrr@{}}
 				\arrayrulecolor{black!40}\toprule
-				& \multicolumn{2}{c}{Precision} & \phantom{i} & \multicolumn{2}{c}{Recall} & \phantom{i} & \multicolumn{2}{c}{F1-score} & \phantom{i} & \multicolumn{2}{c}{F$_\beta$0.5} \\
-				\cmidrule{2-3} \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12} 
-				
-				&Mean &SD & &Mean &SD & &Mean &SD& &Mean & SD\\ \midrule
-				A2C & 0.487 & 0.086 & &\textcolor{dblue}{0.582} & 0.075 & & 0.488 & 0.063 & &0.467 &0.065 \\
-				DQN & 0.399 & 0.204 & &0.491 & 0.032 & & 0.361 & 0.035 & &0.332 &0.060 \\
-				PPO & 0.512 & 0.107 & &0.422 & 0.107 & & 0.441 & 0.096 & &0.472 &0.096 \\
-				REINFORCE & \textcolor{dblue}{0.813} & 0.119 & &0.421 & 0.079 & & \textcolor{dblue}{0.495} & 0.090 & &\textcolor{dblue}{0.609} &0.101 \\
+				& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
+				\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
+				&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
+				A2C & 0.487 & 0.086 & \makecell{(0.481,\\ 0.492)} & &\textcolor{dblue}{0.582} & 0.075 & \makecell{(0.577,\\ 0.587)} & & 0.488 & 0.063 & \makecell{(0.484,\\ 0.493)} & &0.467 &0.065 & \makecell{(0.463,\\ 0.472)} \\
+				DQN & 0.399 & 0.204 & \makecell{(0.386,\\ 0.412)} & &0.491 & 0.032 & \makecell{(0.489,\\ 0.493)} & & 0.361 & 0.035 & \makecell{(0.358,\\ 0.363)} & &0.332 &0.060 & \makecell{(0.328,\\ 0.336)} \\
+				PPO & 0.512 & 0.107 & \makecell{(0.505,\\ 0.518)} & &0.422 & 0.107 & \makecell{(0.414,\\ 0.429)} & & 0.441 & 0.096 & \makecell{(0.435,\\ 0.447)} & &0.472 &0.096 & \makecell{(0.465,\\ 0.478)} \\
+				REINFORCE & \textcolor{dblue}{0.813} & 0.119 & \makecell{(0.805,\\ 0.821)} & &0.421 & 0.079 & \makecell{(0.416,\\ 0.426)} & &\textcolor{dblue}{0.495} & 0.090 & \makecell{(0.489,\\ 0.501)} & &\textcolor{dblue}{0.609} &0.101 & \makecell{(0.602,\\ 0.615)} \\
 				\bottomrule
 		\end{tabular}}
 		\label{tbl_PHMMS}
@@ -722,23 +717,26 @@
 	
 	\subsection{Super models}
 	Finally, we look at performance of ``select'' models. Logically, one would choose the best model from a set of 10 trained models, just as an AutoML or AutoRL framework would. Selecting models based on the highest F1 with a \textit{minimum} satisfying criteria for precision and recall allowed us to evaluate performance of ``super-models'' for each algorithm. At an overall averaged level Table \ref{tbl_supermodels} demonstrates the remarkable performance of the simple REINFORCE algorithm. It does show a lower recall when compared to the DQN, however it is a much more \textit{balanced} model on an overall basis. Appendix \ref{apx} Table \ref{tbl_SuperModelsDetailedMetrics} shows details where the REINFORCE performs better than the other three algorithms by a huge margin, for 14 of the 15 variants. For PHM C06, univariate environment, it was the DQN that performed best, with extremely high metrics throughout and an F1 of 0.969 to 0.831 of REINFORCE.
-	\begin{table}
+	
+	\begin{table} % $$$: CI R1-6
 		\rowspace{1.3}
-		\caption{Super models: Best of 10 rounds; performance averaged over all 15 environments.}
-		{\begin{tabular}{@{}l rr c rr c rr c rr@{}}
+		\caption{\hlc{Super models: Best of 10 rounds; performance averaged over all 15 environments.}}
+		{\begin{tabular}
+				{@{}l rrr c rrr c rrr c rrr@{}}
 				\arrayrulecolor{black!40}\toprule
-				& \multicolumn{2}{c}{Precision} & \phantom{i} & \multicolumn{2}{c}{Recall} & \phantom{i} & \multicolumn{2}{c}{F1-score} & \phantom{i} & \multicolumn{2}{c}{F$_\beta$0.5} \\
-				\cmidrule{2-3} \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12} 
-				
-				&Mean &SD & &Mean &SD & &Mean &SD& &Mean & SD\\ \midrule
-				A2C & 0.520 & 0.031 & &0.859 & 0.053 & & 0.639 & 0.036 & &0.560 &0.032 \\
-				DQN & 0.651 & 0.022 & &0.937 & 0.031 & & 0.740 & 0.022 & &0.678 &0.021 \\
-				PPO & 0.558 & 0.076 & &0.643 & 0.097 & & 0.580 & 0.079 & &0.562 &0.075 \\
-				REINFORCE & \textcolor{dblue}{0.884} & 0.042 & &\textcolor{dblue}{0.884} & 0.042 & & \textcolor{dblue}{0.873} & 0.034 & &\textcolor{dblue}{0.876} &0.036 \\
+				& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
+				\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
+				&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule	
+									
+				A2C & 0.520 & 0.031 & \makecell{(0.518,\\ 0.522)} & &0.859 & 0.053 & \makecell{(0.855,\\ 0.862)} & & 0.639 & 0.036 & \makecell{(0.636,\\ 0.641)} & &0.560 &0.032 & \makecell{(0.558,\\ 0.563)} \\
+				DQN & 0.651 & 0.022 & \makecell{(0.649,\\ 0.652)} & &0.937 & 0.031 & \makecell{(0.935,\\ 0.939)} & & 0.740 & 0.022 & \makecell{(0.739,\\ 0.742)} & &0.678 &0.021 & \makecell{(0.677,\\ 0.680)} \\
+				PPO & 0.558 & 0.076 & \makecell{(0.553,\\ 0.563)} & &0.643 & 0.097 & \makecell{(0.636,\\ 0.649)} & & 0.580 & 0.079 & \makecell{(0.575,\\ 0.585)} & &0.562 &0.075 & \makecell{(0.557,\\ 0.567)} \\
+				REINFORCE & \textcolor{dblue}{0.884} & 0.042 & \makecell{(0.881,\\ 0.887)} & &\textcolor{dblue}{0.884} & 0.042 & \makecell{(0.882,\\ 0.887)} & & \textcolor{dblue}{0.873} & 0.034 & \makecell{(0.871,\\ 0.875)} & &\textcolor{dblue}{0.876} &0.036 & \makecell{(0.873,\\ 0.878)} \\				
 				\bottomrule
 		\end{tabular}}
 		\label{tbl_supermodels}
 	\end{table}
+	
 	\begin{figure}[htb]
 		\centering
 		\includegraphics[width=0.6\textwidth, trim={1.5cm 7cm 1cm 7cm}]{SuperModelsPlot.pdf}  
@@ -792,7 +790,7 @@
 		\label{tbl_ttest}
 	\end{table}
 	
-	%% $$$ Sensitivity analysi
+	%% $$$ Sensitivity analysis
 	\subsection{\hlc{Sensitivity analysis of hyperparameters on the REINFORCE algorithm}}\label{sec_SA}
 		
 	\hlc{RL algorithms are known to be extremely sensitive to hyperparameter and network architecture settings,} \cite{henderson2018deep, andrychowicz2021matters}. \cite{Eimer2023AutoRL} \hlc{show that the often overlooked
@@ -843,9 +841,7 @@
 		%\label{fig_2}
 	\end{figure}
 	
-	\section{Discussion}\label{sec_Discussion}
-	In this study we use the raw data, with no feature engineering. This is in tune with the ``untuned'' algorithms concept. Sophisticated feature engineering techniques exist, allowing for superior results; for example for a similar milling machine PdM problem, \cite{sayyad2023} used time and frequency based techniques such as Fourier and wavelet transforms. With AutoRL one could automate such feature engineering techniques, followed by automated selection of significant features.
-	
+	\section{Discussion}\label{sec_Discussion}		
 	The inventor of the REINFORCE algorithm, in his original paper \cite{REINFORCE-williams1992}, mentions the inability to predict the convergent and asymptotic properties of REINFORCE algorithms using analytical means. The author mentions that \textit{simulation studies} are the primary source of understanding its behavior. 27 years later, \cite{peck2019} notes that rigorous convergence proofs are \textit{not} available for many algorithms based on REINFORCE and in their paper provide an intuition for convergence properties. This supports the extensive experimental studies on REINFORCE performed by \cite{zhang2021sample, zhang2021convergence, peck2019, duan2016benchmarking} as well our empirical research.
 	
 	Both \cite{duan2016benchmarking} and \cite{zhang2021convergence} studied the behavior on multiple OpenAI Gym environments, while \cite{peck2019} provide empirical results using MuJuCo. \cite{duan2016benchmarking} observe that, despite its simplicity it is an effective algorithm in optimizing policies based on deep neural networks. On the other hand, their empirical study concluded that REINFORCE is occasionally trapped in premature convergence to local optima. REINFORCE suffers from high variance \cite{peck2019} and converges very slowly when it does. High variance implies that a large sample of environment interactions are needed to obtain a reasonable approximation of the actual gradient. 
@@ -856,6 +852,7 @@
 	\textcolor{red}{Sensitivity Analysis:}
 	\hlc{Sensitivity of the REINFORCE algorithm to hyperparameters was analyzed via experiments in {\textcolor{red}{Section}}. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the activation for study}. 
 	
+	%% $$$ R2-4 Novelty
 	\hlc{In} \cite{Eimer2023AutoRL}, \citeauthor{Eimer2023AutoRL} \hlc{highlight the importance of our research by stating that it is especially important for ``as-of-yet unexplored domains''}
 	
 	There could be two possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \cite{duan2016benchmarking} observed that \textit{even} with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did.
@@ -864,7 +861,15 @@
 	
 	While there is no doubt that this REINFORCE na\"ive implementation will be unstable and occasionally produce learning patterns that are stuck in local optimas and demonstrate premature convergence, our empirical studies indicate that it did perform well for this problem and at the least deserves further research.
 	
-	\textbf{On the evaluation criteria:} It must be noted that the classification metrics we used assume that the human preventive maintenance policy, based on experience, is ideal. In practice this might not always be the case. The RL agent is trained to replace the tool optimally i.e. maximize use before reaching the threshold wear, and replace only when necessary so as to maintain lowest possible cost of replacement. In our dataset we assume the threshold to be ideally set and base the ``human'' action against that, rather than a real human action, which incidentally is not available for the PHM dataset anyway.
+	%% $$$ R1-4 Limitations
+	\subsection{\hlc{Limitations of our research}}
+	\hlc{Our research carries limitations -- some due to the very design of our objective and some due to unavailability of more resources and time. These however offer opportunities for further research and increase the depth of this topic and provide more knowledge in the domain of AutoRL for predictive maintenance.}
+	
+	\begin{enumerate}
+		\item \hlc{We used raw features, with no feature engineering.} This is in tune with the ``untuned'' algorithms concept. \hlc{However, this creats a \textit{possible} gap, where the more advanced models may demonstrate better performance.}. With AutoRL one could automate such feature engineering techniques, followed by automated selection of significant features.
+		\item \hlc{Advanced algorithms provide a richer set of hyperparameters and it is fair to assume that tuned versions of these algorithms will perform better than the na\"ive REINFORCE.}
+		\item We assume that the human preventive maintenance policy, based on experience, is ideal. In practice this might not always be the case. \hlc{We had to use expert guidelines to decide the tool replacement wear thresholds} as these were not available for the PHM dataset.
+	\end{enumerate}
 	
 	\section{Conclusion}\label{sec_Conclusion}
 	The REINFORCE is a simple algorithm and our na\"ive implementation can be improved drastically, for example with the implementation of a baseline to reduce variance. We evaluated the REINFORCE along with industry grade implementations of more advanced algorithms, DQN, A2C and PPO, over 15 environment variants (simulated and real data). Despite its simplicity, known variance and convergence issues, it performed surprisingly well, as observed through numerical results, plots and statistical tests. 
