@@ -417,7 +417,7 @@
 		\end{algorithmic}
 	\end{algorithm}
 	
-	\subsubsection*{Network architecture and basic hyperparameters}
+	\subsubsection*{Network architecture and basic hyperparameters}\label{sec_architecture}
 	Stable-Baselines3 (SB3) provides robust open source implementations of many RL algorithms, \cite{SB3-paper}. As of 20-Sep-2024, 13 algorithms have been implemented however REINFORCE has \textit{not} been implemented, \cite{SB3-algorithms}. For this research we use the \textit{default} SB3 implementations of DQN, A2C and PPO and compare its performance to a custom implementation of the REINFORCE algorithm using a very simple network architecture. Table \ref{tbl_network-architecture} shows a comparison of the architecture and the basic common hyperparameters.
 	
 	\begin{table}
@@ -817,9 +817,8 @@
 		\label{fig_SA_LR_Tanh}
 	\end{figure}
 	
-	%trim=left botm right top
-	\subsubsection{Training times}
-	Our final set of results are related to the training time required for each algorithm. The na\"ive REINFORCE algorithm is extremely slow, with a very high variance in training time, as seen in Fig. \ref{fig_tr-time}.
+	\subsubsection{Training times \hlc{and model byte size}}
+	Our final set of results are related to the training time required \hlc{and size of models produced}, for each algorithm. The na\"ive REINFORCE algorithm is extremely slow, with a very high variance in training time, as seen in Fig. \ref{fig_tr-time}.
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=0.6\linewidth]{Model_training_time.pdf}  
@@ -841,6 +840,9 @@
 		%\label{fig_2}
 	\end{figure}
 	
+	%% $$$ R2-2 Runtime
+	\hlc{The model sizes produced by all algorithms is extremely small: A2C 89.8 KB, DQN 56.4 KB, PPO 135.5 KB and REINFORCE 121.5 KB. We see that the DQN produced the smallest while the PPO produced the largest.}
+	
 	\section{Discussion}\label{sec_Discussion}		
 	The inventor of the REINFORCE algorithm, in his original paper \cite{REINFORCE-williams1992}, mentions the inability to predict the convergent and asymptotic properties of REINFORCE algorithms using analytical means. The author mentions that \textit{simulation studies} are the primary source of understanding its behavior. 27 years later, \cite{peck2019} notes that rigorous convergence proofs are \textit{not} available for many algorithms based on REINFORCE and in their paper provide an intuition for convergence properties. This supports the extensive experimental studies on REINFORCE performed by \cite{zhang2021sample, zhang2021convergence, peck2019, duan2016benchmarking} as well our empirical research.
 	
@@ -855,21 +857,26 @@
 	%% $$$ R2-4 Novelty
 	\hlc{In} \cite{Eimer2023AutoRL}, \citeauthor{Eimer2023AutoRL} \hlc{highlight the importance of our research by stating that it is especially important for ``as-of-yet unexplored domains''}
 	
-	There could be two possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \cite{duan2016benchmarking} observed that \textit{even} with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did.
+	There could be two possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \cite{duan2016benchmarking} observed that \textit{even} with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did. \hlc{In their survey of Auto RL} \cite{autorl:parker2022} \hlc{state that the design of neural network architectures is paid very little attention to. Their survey concludes that there is a lack of conceptual understanding on architectural design choices and the benefits they offer and most implementations use two or three hidden layers - just as did the algorithm implementations we studied (section {\ref{sec_architecture}}). Our REINFORCE implementation was even simpler with just a \textit{single} hidden layer and could be a reason for the superior performance on simple environments.} %% $$$ R1-5 7:Architecture simplicity
 	
 	RL algorithms are incredibly sensitive to hyperparameters and the neural network architectures they employ. Working implementations need several decisions to be made during high-, as well as low- level design; these strongly impact the performance, \cite{henderson2018deep, andrychowicz2021matters}. In-fact the same algorithm could produce very different results depending on the code base one uses, \cite{henderson2018deep, SB3-paper}. These research pointers could additionally be the reason for the superior performance of the REINFORCE, but more significantly they collectively must be considered before AutoRL platforms become successful.
 	
-	While there is no doubt that this REINFORCE na\"ive implementation will be unstable and occasionally produce learning patterns that are stuck in local optimas and demonstrate premature convergence, our empirical studies indicate that it did perform well for this problem and at the least deserves further research.
+	%% $$$ R2-2 Runtime
+	\hlc{We saw that the model sizes for all algorithms are under 140 KB. This implies that the runtime memory requirements are extremely small thus offering fast inferences. This suggests that such models can be used in embedded form on IoT devices and housed near the machines. This is a significant benefit for creating Industry 4.0 predictive maintenance solutions.} 
+	
+	While there is no doubt that this REINFORCE na\"ive implementation will be unstable and occasionally produce learning patterns that are stuck in local optimas and demonstrate premature convergence, our empirical studies indicate that it did perform well for this problem and at the least deserves further research.	
 	
 	%% $$$ R1-4 Limitations
-	\subsection{\hlc{Limitations of our research}}
+	\subsection{\hlc{Limitations and future scope for research}}
 	\hlc{Our research carries limitations -- some due to the very design of our objective and some due to unavailability of more resources and time. These however offer opportunities for further research and increase the depth of this topic and provide more knowledge in the domain of AutoRL for predictive maintenance.}
 	
 	\begin{enumerate}
-		\item \hlc{We used raw features, with no feature engineering.} This is in tune with the ``untuned'' algorithms concept. \hlc{However, this creats a \textit{possible} gap, where the more advanced models may demonstrate better performance.}. With AutoRL one could automate such feature engineering techniques, followed by automated selection of significant features.
+		\item \hlc{We used raw features, with no feature engineering.} This is in tune with the ``untuned'' algorithms concept. \hlc{However, this creats a \textit{possible} gap, where the more advanced models may demonstrate better performance}. With AutoRL one could automate such feature engineering techniques, followed by automated selection of significant features.
 		\item \hlc{Advanced algorithms provide a richer set of hyperparameters and it is fair to assume that tuned versions of these algorithms will perform better than the na\"ive REINFORCE.}
 		\item We assume that the human preventive maintenance policy, based on experience, is ideal. In practice this might not always be the case. \hlc{We had to use expert guidelines to decide the tool replacement wear thresholds} as these were not available for the PHM dataset.
 	\end{enumerate}
+		
+	\hlc{\textbf{Avenues for future research}: Our research covers single-agent RL. Multi-agent and multi-objective serve more complex problems and are areas we plan to research in the near future. Offline RL (also called Batch RL) is a paradigm where offline data, such as previously collected data such as expert demonstrations or experiments, offer a path to generalize agents to a real world environment. No environment interaction is required in offline RL.}.
 	
 	\section{Conclusion}\label{sec_Conclusion}
 	The REINFORCE is a simple algorithm and our na\"ive implementation can be improved drastically, for example with the implementation of a baseline to reduce variance. We evaluated the REINFORCE along with industry grade implementations of more advanced algorithms, DQN, A2C and PPO, over 15 environment variants (simulated and real data). Despite its simplicity, known variance and convergence issues, it performed surprisingly well, as observed through numerical results, plots and statistical tests. 
