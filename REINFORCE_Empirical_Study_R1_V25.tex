@@ -1,8 +1,6 @@
 %% Discover Applied Sciences - Revision 1
-%% 19-Dec-2024: Highlights
-%% 28-Dec-2024: V1 - Begin comments. V2 - Methodology overhaul 
-%% 29-Dec-2024: V2.1. V.2.2: CI tables
-%% 30-Dec: V2.3 - Dataset variability
+%% 29-Dec-2024: V2.1. V.2.2: CI tables -- 30-Dec: V2.3 - Dataset variability.
+%%% V.25: 2025 - LR novelty
 
 \documentclass[referee, sn-mathphys-num]{sn-jnl}
 %%%% Standard Packages
@@ -37,15 +35,6 @@
 \usepackage{algpseudocode}%
 \usepackage{listings}%
 %%%%
-
-% \theoremstyle{thmstyleone}%
-% \newtheorem{theorem}{Theorem}% 
-% \newtheorem{proposition}[theorem]{Proposition}% 
-% \theoremstyle{thmstyletwo}%
-% \newtheorem{example}{Example}%
-% \newtheorem{remark}{Remark}%
-% \theoremstyle{thmstylethree}%
-% \newtheorem{definition}{Definition}%
 
 \raggedbottom
 %%\unnumbered% uncomment this for unnumbered level heads
@@ -157,13 +146,96 @@
 	In this section we survey the intersection of past work related to RL for PdM with experimental evaluation of real world applications, specifically milling machines and AutoRL.
 	
 	\subsection{Literature Review}
+	\hlc{We reviewed related research to establish research gaps that we could address. Our work is meant to assist practitioners apply RL for predictive maintenance. It touches the dual fields of HPO (hyperparameter optimization) and the development of the AutoRL.} 
+	
 	Application of RL for PdM has been surveyed by \cite{Panzer2021, Erhan2021, siraskar2023} however none of the RL research surveyed covered milling machines. Similarly, AutoML for PdM was covered in only 9 research articles, with coverage limited to supervised machine learning and therefore excluded RL and AutoRL\footnote{As of: 8-Sep-2024, across IEEE Xplore\texttrademark{}, Scopus\texttrademark{} and Web Of Science\texttrademark{}}.
 	
-	Experimental comparison of RL algorithms, has been limited to using standard benchmark OpenAI Gym environments: \cite{sandeep2022experimental} documents experimental evaluation of four policy-gradient and actor-critic algorithms PPO, Soft Actor Critic (SAC), Deep Deterministic Policy Gradient (DDPG) and A2C using the Pendulum, Mountain Car, Bipedal Walker, Lunar Landing and Atari 2600 game environments. \cite{Krishna2020} evaluate DQN, DoubleDQN, A2C, REINFORCE and PPO using Cartpole, Space Invaders and the Lunar Lander. \cite{dulac2021, dulac2020empirical} are significant contributions toward analyzing \textit{real-world} challenges. They performed empirical studies on Cartpole, humanoid and walker environments\footnote{From the Real-World Reinforcement Learning (RWRL) Suite} by embedding them with real-world design concepts and then evaluating REINFORCE, Trust Region Policy Optimization (TRPO) and DDPG. %\footnote{Link to RWRL: \href{https://github.com/google-research/realworldrl_suite}{link}}. 
+	Experimental comparison of RL algorithms, has been limited to using standard benchmark OpenAI Gym environments: \cite{sandeep2022experimental} documents experimental evaluation of four policy-gradient and actor-critic algorithms PPO, Soft Actor Critic (SAC), Deep Deterministic Policy Gradient (DDPG) and A2C using the Pendulum, Mountain Car, Bipedal Walker, Lunar Landing and Atari 2600 game environments. \cite{Krishna2020} evaluate DQN, DoubleDQN, A2C, REINFORCE and PPO using Cartpole, Space Invaders and the Lunar Lander. \cite{dulac2021, dulac2020empirical} are significant contributions toward analyzing \textit{real-world} challenges. They performed empirical studies on Cartpole, humanoid and walker environments\footnote{From the Real-World Reinforcement Learning (RWRL) Suite} by embedding them with real-world design concepts and then evaluating REINFORCE, Trust Region Policy Optimization (TRPO) and DDPG.
 	
 	\cite{dulac2021, henderson2018deep} tackle RL for continuous control. \cite{henderson2018deep} evaluate DDPG, ACKTR, TRPO and PPO, using, like we do, the OpenAI baseline implementations, on complex MuJoCo\footnote{\href{https://mujoco.org/}{MuJoCo}: `Multi-Joint dynamics with Contact' e.g. HalfCheetah, Hopper, Walker and Swimmer} environments. \cite{ford2022cognitive} is one experimental evaluation we found based on a \textit{real-world} application where DQN, A2C and PPO are applied for choosing the operational radio frequency (RF) mode for a multi-function RF system and go on to suggest that PPO is the best.
 	
+	%% Connecting AutoRl + HPO
+	\cite{autorl:parker2022}\footnote{A collaborative research effort between universities Oxford, Leibniz, Freiburg and organizations Google, Meta and Amazon} \hlc{is a detailed technical assessment and survey of the AutoRL field. They provide a deep dive into the techniques and methods to automate the RL training pipeline, outline the implied challenges and the open research questions that remain. They observe that it is the methods that can \textit{dynamically adapt hyperparameter} configurations during the training cycle that will generate the best models; however their study concluded that, despite substantial research, it is not yet clear which hyperparameters must be optimized dynamically and which statically. A second important conclusion was the acknowledgment that relation of hyperparameters to environments was as yet undetermined. They align with} \cite{Eimer2023AutoRL}, \hlc{that hyperparameter optimization will vary and be \textit{specific to an environment}}. 
+		
+	\cite{autorl:shala2022} \hlc{are the first to propose a \textit{tabular AutoRL benchmark} for studying the hyperparameters of RL algorithms. They have considered hyperparameter search spaces for five RL methods - PPO, DDPG, A2C, SAC and TD3, across 22 OpenGym, environments. They studied four hyperparameters of which only two were common across all five algorithms -- the learning rate and discount factor {$\gamma$}. They did not address any network design hyperparameter.}
+	
+	\hlc{The main contribution of} \cite{autorl:afshar2022} \hlc{is the proposition of a \textit{generalized AutoRL framework} split into three main components -- MDP (Markov Decision Process) modeling, algorithm selection and hyperparameter optimization.}
+	
+	\hlc{All AutoRL related work} \cite{autorl:afshar2022, autorl:parker2022, autorl:shala2022, Eimer2023AutoRL}, \hlc{point unanimously toward three research gaps: First, unlike AutoML pipelines, AutoRL as a usable framework has not yet been developed, second there is no ideal hyperparameter configuration setup that is clearly optimal for a set environments and third domain specific work is required for AutoRL to be effective.} 
+	
+	%% LR consolidate
+	\hlc{The authoritative survey by} \cite{autorl:parker2022}\hlc{mention that as a completely closed-loop system, in RL, each of its component influences the other. This therefore poses a challenge for automatic tuning as any interim system evaluation (during training) is highly likely to be stochastic due to the interaction of various noise sources (e.g. policy, environment). They concluded that no AutoRL approach has been developed to offer the best combination of an algorithm itself and then its configuration}. 
+	
 	Our survey shows that most existing work use standard OpenAI Gym environments, which although necessary for bench-marking performance, do not provide coverage of industrial PdM. In Section {\ref{sec_Implementation}} we attempt to bridge this gap by implementing a custom built environment.
+	
+	
+
+%	
+%	
+%	 autorl:afshar2022 ===> }
+%		
+%		===================
+%		shala2022 SURVEY SHOWS =--=== >> Still, HPO and AutoRL methods have not yet found widespread adoption by the RL community as methods are often not extensively evaluated
+%		versa. Contrary to
+%		practitioners’ hopes, there exists no silver bullet hyper-parameter configuration that is clearly optimal
+%		in the vast majority of the environments. The take-home message is that optimal hyperparameters are
+%		environment-specific and must be carefully tuned.
+%				===================
+%		
+%		
+%		
+%		 	EG. HYPS = lr, gamma, clip >> 	
+%		\textcolor{red}{For example, it is known that smaller values of gamma 	lead to faster convergence but might result in myopic policies [39]. Increasing the discounting 	value over time can drastically speed up learning [40]. Further, François-Lavet et al. [40] showed 	that simultaneously decreasing the learning rate while increasing 	improves learning speeds even further.}
+%	
+%	EG. HYPS = lr, gamma, clip >> 	
+%	\textcolor{red}{For example, it is known that smaller values of gamma 	lead to faster convergence but might result in myopic policies [39]. Increasing the discounting 	value over time can drastically speed up learning [40]. Further, François-Lavet et al. [40] showed 	that simultaneously decreasing the learning rate while increasing 	improves learning speeds even further.}
+%	
+%	%% $$$ R2-4 Novelty
+%	
+%	\hlc{Our research validates this statement, for REINFORCE, by addressing three research gaps -- first, a detailed statistically backed study of the computationally simple REINFORCE, second, studying the untuned behaviour of industry standard algorithms and finally as Eimer et al. {\cite{Eimer2023AutoRL}} highlight the importance of studying AutoRL, for RL's domain specific behaviour, in ``as-of-yet unexplored domains''.} 
+%	
+%	We studied untuned algorithms as available AutoML systems tend to be highly configurable \cite{Tornede2020AutoML} - resulting in overwhelming practitioners. In the same study \cite{Tornede2020AutoML} mentions the lack of AutoML for time-series based data .
+%	- Issue with standard algos: Timeseries RUL prob has varying length of time - so converts to fixed length"
+%	Say in text \cite{ParkerHolder2022AutoRL} Thus, hyperparameter settings
+%	might require very different values over the whole training run. -- The most authoratiative survey \footnote{Researchers from Universities - Oxford, Leibniz, Freiburg and from Google, Meta and Amazon}. 
+%	Holder provides "TABLE.3. High level summary of each class of AutoRL algorithms"
+%	Talks abt domain dependence - See Intro!! SEE ALL PURPLE - PINK HIGHLIGHTS
+%	does not cover  predictive moantenance
+%	ParkerHolder2022AutoRL:: "it is to be expected that the discovered settings are not transferable to other environments" - HENCE tested on untuned
+%	Eimer2023AutoRL -- This is especially important for as-of-yet unexplored domains, as pointed out by Zhang et al. (2021a).
+%	
+%	ParkerHolder2022AutoRL: why empiricla study of different algos-- because "To the best of our knowledge, so far no AutoRL approach has explored the intersection of algorithm selection and algorithm configuration"
+%	"parker-holder - (1) RL is a complete closed-loop system. As such, it is likely each of the components
+%	discussed has an influence on others, 
+%	(2) The challenge is compounded in RL since evaluations in RL are almost always necessarily stochastic and much more noisy than in supervised learning, due to various sources (e.g. policy, environment), which can be a challenge for any form of automatic tuning."
+%	
+%	
+%	
+%	%% ##################
+%	%% GAPS
+%	%% ##################
+%	1. specific to an environment \cite{autorl:parker2022} and \cite{Eimer2023AutoRL} + Nikolai Matni 2019: It is difficult to say which approach is better without selecting a specific problem to which to apply them
+%	
+%	2. \cite{autorl:shala2022} -- three points
+%		2.1.  -- did not study REINFORCE only - PPO, DDPG, A2C, SAC and TD3 
+%		2.2. and NOT other env. just , across 22 OpenGym, environments. 
+%		2.3 two common across all five algorithms -- the learning rate and discount factor $\gamma$
+%	3. all three agree on xxx	
+
+
+%	%% ##################
+%	%% FOR ML PART
+%	%% ##################
+%	
+%	\textcolor{red}{from the PARKER HOLDER } \cite{autorl:parker2022} ---- This paper has introduced AutoRL by discussing a wide variety of methods to automate the
+%	RL training pipeline. Indeed, unlike supervised learning, which is usually an open-loop onestep
+%	process, RL is a complete closed-loop system. As such, it is likely each of the components
+%	discussed has an influence on others, and if we want to train our agents end-to-end as part of
+%	a broader system, it ultimately will require a holistic solution. The challenge is compounded
+%	in RL since evaluations in RL are almost always necessarily stochastic and (potentially much
+%	more) noisy than in supervised learning, due to various sources (e.g. policy, environment),
+%	which can be a challenge for any form of automatic tuning
+%	
 	
 	\subsection{Technical Background}
 	\subsubsection*{Key concepts of RL}
@@ -843,20 +915,20 @@
 	%% $$$ R2-2 Runtime
 	\hlc{The model sizes produced by all algorithms is extremely small: A2C 89.8 KB, DQN 56.4 KB, PPO 135.5 KB and REINFORCE 121.5 KB. We see that the DQN produced the smallest while the PPO produced the largest.}
 	
-	\section{Discussion}\label{sec_Discussion}		
-	The inventor of the REINFORCE algorithm, in his original paper \cite{REINFORCE-williams1992}, mentions the inability to predict the convergent and asymptotic properties of REINFORCE algorithms using analytical means. The author mentions that \textit{simulation studies} are the primary source of understanding its behavior. 27 years later, \cite{peck2019} notes that rigorous convergence proofs are \textit{not} available for many algorithms based on REINFORCE and in their paper provide an intuition for convergence properties. This supports the extensive experimental studies on REINFORCE performed by \cite{zhang2021sample, zhang2021convergence, peck2019, duan2016benchmarking} as well our empirical research.
+	\section{Discussion}\label{sec_Discussion}
+	%% $$$ glue
+	\hlc{In this section, we discuss observations from our experiments and sensitivity analysis, covering properties of REINFORCE as an algorithm (both positive and limiting), aspects related to its architecture, training time, model size and cost effectiveness. We end the section with limitations of our research and potential areas for future research.}  
 	
-	Both \cite{duan2016benchmarking} and \cite{zhang2021convergence} studied the behavior on multiple OpenAI Gym environments, while \cite{peck2019} provide empirical results using MuJuCo. \cite{duan2016benchmarking} observe that, despite its simplicity it is an effective algorithm in optimizing policies based on deep neural networks. On the other hand, their empirical study concluded that REINFORCE is occasionally trapped in premature convergence to local optima. REINFORCE suffers from high variance \cite{peck2019} and converges very slowly when it does. High variance implies that a large sample of environment interactions are needed to obtain a reasonable approximation of the actual gradient. 
+	%% $$$ R2-2-13 Computational complexity
+	\hlc{As a simple model-free RL algorithm, REINFORCE offers a derivative-free optimization of unconstrained problems.} \cite{Matni2019} \hlc{explains that, provided one can sample efficiently, REINFORCE can be used to solve essentially any problem!.} The inventor of the REINFORCE algorithm, in his original paper \cite{REINFORCE-williams1992}, mentions the inability to predict the convergent and asymptotic properties of REINFORCE algorithms using analytical means. The author mentions that \textit{simulation studies} are the primary source of understanding its behavior. 27 years later, \cite{peck2019} notes that rigorous convergence proofs are \textit{not} available for many algorithms based on REINFORCE and in their paper provide an intuition for convergence properties. This supports the extensive experimental studies on REINFORCE performed by \cite{zhang2021sample, zhang2021convergence, peck2019, duan2016benchmarking} as well our empirical research. 
 	
-	\cite{zhang2021sample} provide the first known global convergence and sample efficiency results for the REINFORCE algorithm. Their study involved controlling the number of ``bad'' episodes as well as applying a ``doubling'' trick for studying the global convergence. Interestingly our training rounds resulted in multiple situations of ``zero'' performance (``bad'' episodes) for REINFORCE (18 instances) as also for Stable-Baseline's A2C implementation (12 instances); DQN and PPO did not show any occurrences.
+	Both \cite{duan2016benchmarking} and \cite{zhang2021convergence} studied the behavior on multiple OpenAI Gym environments, while \cite{peck2019} provide empirical results using MuJuCo. \cite{duan2016benchmarking} observe that, despite its simplicity it is an effective algorithm in optimizing policies based on deep neural networks. On the other hand, their empirical study concluded that REINFORCE is occasionally trapped in premature convergence to local optima. REINFORCE suffers from high variance \cite{peck2019} and converges very slowly when it does. High variance implies that a large sample of environment interactions are needed to obtain a reasonable approximation of the actual gradient.
 	
-	%% $$$ R1-1
-	\textcolor{red}{Sensitivity Analysis:}
+	\cite{zhang2021sample} provides the first known global convergence and sample efficiency results for the REINFORCE algorithm. Their study involved controlling the number of ``bad'' episodes as well as applying a ``doubling'' trick for studying the global convergence. Interestingly our training rounds resulted in multiple situations of ``zero'' performance (``bad'' episodes) for REINFORCE (18 instances) as also for Stable-Baseline's A2C implementation (12 instances); DQN and PPO did not show any occurrences.
+	
+	%% $$$ R1-1 Sensitivity Analysi
 	\hlc{Sensitivity of the REINFORCE algorithm to hyperparameters was analyzed via experiments in {\textcolor{red}{Section}}. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the activation for study}. 
-	
-	%% $$$ R2-4 Novelty
-	\hlc{In} \cite{Eimer2023AutoRL}, \citeauthor{Eimer2023AutoRL} \hlc{highlight the importance of our research by stating that it is especially important for ``as-of-yet unexplored domains''}
-	
+		
 	There could be two possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \cite{duan2016benchmarking} observed that \textit{even} with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did. \hlc{In their survey of Auto RL} \cite{autorl:parker2022} \hlc{state that the design of neural network architectures is paid very little attention to. Their survey concludes that there is a lack of conceptual understanding on architectural design choices and the benefits they offer and most implementations use two or three hidden layers - just as did the algorithm implementations we studied (section {\ref{sec_architecture}}). Our REINFORCE implementation was even simpler with just a \textit{single} hidden layer and could be a reason for the superior performance on simple environments.} %% $$$ R1-5 7:Architecture simplicity
 	
 	RL algorithms are incredibly sensitive to hyperparameters and the neural network architectures they employ. Working implementations need several decisions to be made during high-, as well as low- level design; these strongly impact the performance, \cite{henderson2018deep, andrychowicz2021matters}. In-fact the same algorithm could produce very different results depending on the code base one uses, \cite{henderson2018deep, SB3-paper}. These research pointers could additionally be the reason for the superior performance of the REINFORCE, but more significantly they collectively must be considered before AutoRL platforms become successful.
@@ -864,10 +936,10 @@
 	%% $$$ R2-2 Runtime
 	\hlc{We saw that the model sizes for all algorithms are under 140 KB. This implies that the runtime memory requirements are extremely small thus offering fast inferences. This suggests that such models can be used in embedded form on IoT devices and housed near the machines. This is a significant benefit for creating Industry 4.0 predictive maintenance solutions.} 
 	
-	While there is no doubt that this REINFORCE na\"ive implementation will be unstable and occasionally produce learning patterns that are stuck in local optimas and demonstrate premature convergence, our empirical studies indicate that it did perform well for this problem and at the least deserves further research.	
+	While there is no doubt that this REINFORCE na\"ive implementation will be unstable and occasionally produce learning patterns that are stuck in local optimas and demonstrate premature convergence, our empirical studies indicate that it did perform well for this problem and at the least deserves further research. 
 	
 	%% $$$ R1-4 Limitations
-	\subsection{\hlc{Limitations and future scope for research}}
+	\subsection*{\hlc{Limitations and future scope for research}}
 	\hlc{Our research carries limitations -- some due to the very design of our objective and some due to unavailability of more resources and time. These however offer opportunities for further research and increase the depth of this topic and provide more knowledge in the domain of AutoRL for predictive maintenance.}
 	
 	\begin{enumerate}
@@ -884,7 +956,7 @@
 	Implementing robust RL algorithms is complex and \cite{SB3-paper} puts this beautifully, mentioning how small implementation details can significantly impact performance \textit{``that is often greater than the difference between the algorithms themselves''}. 
 	
 	We hope our research contributes to empirical evidence related to the application of REINFORCE to predictive maintenance. This contribution aims to play a vital role in advancing the prospects of automated reinforcement learning i.e. AutoRL to Industry 4.0 revolution.
-	
+		
 	\backmatter
 	
 	%\bmhead{Supplementary information}
@@ -1057,7 +1129,7 @@
 	%%===========================================================================================%%
 	
 	\clearpage
-	\bibliography{bibliography}
+	\bibliography{bibliography_safe}
 	
 	
 \end{document}
