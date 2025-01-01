@@ -147,8 +147,15 @@
 	
 	\subsection{Literature Review}
 	\hlc{We reviewed related research to establish research gaps that we could address. Our work is meant to assist practitioners apply RL for predictive maintenance. It touches the dual fields of HPO (hyperparameter optimization) and the development of the AutoRL.} 
-	
-	Application of RL for PdM has been surveyed by \cite{Panzer2021, Erhan2021, siraskar2023} however none of the RL research surveyed covered milling machines. Similarly, AutoML for PdM was covered in only 9 research articles, with coverage limited to supervised machine learning and therefore excluded RL and AutoRL\footnote{As of: 8-Sep-2024, across IEEE Xplore\texttrademark{}, Scopus\texttrademark{} and Web Of Science\texttrademark{}}.
+
+	Application of RL for PdM has been surveyed by \cite{Panzer2021, Erhan2021, siraskar2023}. \hlc{There are no research articles that cover AutoRL for predictive maintenance. We therefore widened our scope and searched for AutoML for PdM resulting in 21 articles (of which were 14 were conference papers and 7 piblished in journals), Fig. {\ref{fig_artcilestats}}, however the research coverage remained limited to supervised machine learning and excluded RL and AutoRL.}\footnote{As of: 21-Dec-2024, across IEEE Xplore\texttrademark{}, Scopus\texttrademark{} and Web Of Science\texttrademark{}}.
+	% trim=left botm right top. % \fbox{\includegraphics[trim=3.5cm 18.75cm 4cm 3.3cm]{articlestats.pdf}}
+	\begin{figure}[hbt!]
+		\centering
+		\includegraphics[width=0.4\textwidth, trim={3.5cm 18.25cm 4cm 3.3cm}]{articlestats.pdf}
+		\caption{Research articles related to AutoML and PdM. None were found on AutoRL for PdM.}
+		\label{fig_artcilestats}
+	\end{figure} 
 	
 	Experimental comparison of RL algorithms, has been limited to using standard benchmark OpenAI Gym environments: \cite{sandeep2022experimental} documents experimental evaluation of four policy-gradient and actor-critic algorithms PPO, Soft Actor Critic (SAC), Deep Deterministic Policy Gradient (DDPG) and A2C using the Pendulum, Mountain Car, Bipedal Walker, Lunar Landing and Atari 2600 game environments. \cite{Krishna2020} evaluate DQN, DoubleDQN, A2C, REINFORCE and PPO using Cartpole, Space Invaders and the Lunar Lander. \cite{dulac2021, dulac2020empirical} are significant contributions toward analyzing \textit{real-world} challenges. They performed empirical studies on Cartpole, humanoid and walker environments\footnote{From the Real-World Reinforcement Learning (RWRL) Suite} by embedding them with real-world design concepts and then evaluating REINFORCE, Trust Region Policy Optimization (TRPO) and DDPG.
 	
@@ -175,10 +182,34 @@
 		\item \hlc{None of the AutoRL comparative studies covered network architecture elements - consider covering at least one important \textbf{network hyperparameter}}.
 	\end{enumerate}
 
-	\hlc{As a final part of literature background study, we briefly table related machine learning work. We will later refer to this in the Discussion section.}
-	
-	
-	
+	\hlc{Our work focuses on RL. Supervised machine learning can be used to solve such problems i.e. detect when the fault part needs replacement. As a final part of this existing literature study, we briefly table related \textit{machine learning} work that we can compare to, in the Discussion section {\ref{sec_Discussion}}}
+
+
+	\begin{table}[hbtp!]
+	\rowspace{1.5}
+	\caption{\hlc{ML based solutions for similar predictive maintenance problem.}}%\label{tab1}%
+	{\begin{tabular}[h]{L{4cm} L{4cm} L{2.75cm} R{1.25cm} L{3cm}}
+			\arrayrulecolor{black!40}\toprule
+			\hlc{ML technique} & \hlc{Time series} & \hlc{Research article} & \hlc{Accuracy} & \hlc{Domain - use-case} \\
+			\midrule	
+			Support Vector Machine & Time domain, multivariate & \citeauthor{niu2020-93ML} \cite{niu2020-93ML} & 0.967 & \multirow{8}{3cm}{Milling tool-wear condition monitoring}\\
+			k-Nearest Neighbour & Time-domain with wavelet transforms & \citeauthor{yang2020-94ML} \cite{yang2020-94ML} & 0.948 & \\
+			Support Vector Machine & Time-domain with wavelet transforms & \citeauthor{lei2020-95ML} \cite{lei2020-95ML} & 0.908 & \\
+			Support Vector Machine & Time and frequency domain & \citeauthor{zhou2020-96ML} \cite{zhou2020-96ML} & 0.908 & \\
+			Support Vector Machine & Time domain, multivariate & \citeauthor{ou2020-97ML} \cite{ou2020-97ML} & 0.918 & \\
+			Naive Bayes and k-star & Time domain, multivariate & \citeauthor{madhusudana2016-64ML} \cite{madhusudana2016-64ML} & 0.969 & \\
+			Tree family classifiers & Time domain, multivariate & \citeauthor{patange2019-23ML} \cite{patange2019-23ML} & 0.890 & \\
+			Calibration-model & Time domain, multivariate & \citeauthor{liu2020-92ML} \cite{liu2020-92ML} & 0.900 & \\ \midrule
+			CNN with Attention Knowledge Distillation & Time domain, multivariate & \citeauthor{fu2023ML} \cite{fu2023ML} & 0.972 & \multirow{2}{3cm}{Bearings: Classification of faults}\\
+			CNN based LeNet & Time domain, multivariate & \citeauthor{pandey2023ML} \cite{pandey2023ML} & 0.953 & \\ \midrule
+			Nadaraya-Watson Attention mechanism & Time domain, univariate & \citeauthor{Siraskar2024ML} \cite{Siraskar2024ML} & 0.984 & \multirow{2}{3.5cm}{Milling tool-wear fault detection. Performance in $R^2$}\\
+			Nadaraya-Watson Attention mechanism & Time domain, multivariate & \citeauthor{Siraskar2024ML} \cite{Siraskar2024ML} & 0.834 & \\
+
+			\bottomrule
+	\end{tabular}}
+	%\footnotetext[-]{Note: ``NA'' implies not-available or not-applicable.}
+	\label{tbl_ml}
+\end{table}
 
 %	%% ##################
 %	%% For SA discussion +
@@ -1089,7 +1120,7 @@
 	%%===========================================================================================%%
 	
 	\clearpage
-	\bibliography{bibliography_safe}
+	\bibliography{bibliography}
 	
 	
 \end{document}
