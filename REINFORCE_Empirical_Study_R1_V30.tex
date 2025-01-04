@@ -1,8 +1,11 @@
-%% Discover Applied Sciences - Revision 1
-%% 29-Dec-2024: V2.1. V.2.2: CI tables -- 30-Dec: V2.3 - Dataset variability.
-%%% V.25: 2025 - LR novelty
+%% ==================================================================
+%% Home version - 03-Jan: 19:26 pm
+%% ==================================================================
 
 \documentclass[referee, sn-mathphys-num]{sn-jnl}
+\bibliographystyle{unsrt}
+%\bibliography{bibliography}
+
 %%%% Standard Packages
 %% <additional latex packages if required can be included here>
 \usepackage{subfigure}% Support for small, `sub' figures and tables
@@ -39,7 +42,6 @@
 \raggedbottom
 %%\unnumbered% uncomment this for unnumbered level heads
 
-
 % Macros
 \algnewcommand{\LineComment}[1]{\State \(\triangleright\) #1}
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
@@ -54,7 +56,7 @@
 \definecolor{ltgray}{gray}{0.93}
 \definecolor{dblue}{rgb}{0.20, 0.30, 1.0}
 
-\newcommand{\hlc}[2][cyan!17]{{\colorlet{foo}{#1}\sethlcolor{foo}\hl{#2}}}
+\newcommand{\hlc}[2][cyan!15]{{\colorlet{foo}{#1}\sethlcolor{foo}\hl{#2}}}
 \makeatletter
 \def\SOUL@hlpreamble{%
 	\setul{}{2.8ex}% default is 2.5ex
@@ -113,7 +115,7 @@
 		\label{fig_RL-loop}
 	\end{figure}
 	
-	AutoML offers automated machine learning (ML) platforms. Once the user feeds in data and sets an objective, they detect data types of features and response variables, select suitable ML techniques from a library, run techniques like grid-search on the hyperparameter space, train the models, select evaluation metrics, evaluate the models using techniques such as hold-out or cross-validation and finally select the best model. Such automated pipelines are often available for supervised and unsupervised ML fields. AutoML for RL, called AutoRL, is conceptually similar and intended for automating RL development. However RL is extremely sensitive to hyperparameter and network architectures and this prevents practical out-of-the-box use of RL, \cite{autorl:shala2022, autorl:afshar2022}. Successful RL agents must therefore be manually trained by experts \cite{autorl:parker2022}, which unfortunately hampers the spread of these learning methods across the wide industrial domain.
+	AutoML offers automated machine learning (ML) platforms. Once the user feeds in data and sets an objective, they detect data types of features and response variables, select suitable ML techniques from a library, run techniques like grid-search on the hyperparameter space, train the models, select evaluation metrics, evaluate the models using techniques such as hold-out or cross-validation and finally select the best model. Such automated pipelines are often available for supervised and unsupervised ML fields. AutoML for RL, called AutoRL, is conceptually similar and intended for automating RL development. However RL is extremely sensitive to hyperparameter and network architectures and this prevents practical out-of-the-box use of RL, \cite{autorl:shala2022, autorl:afshar2022}. Successful RL agents must therefore be manually trained by experts \cite{autorl:parker2022}, which unfortunately \hlc{restricts the application} of these learning methods across the wide industrial domain.
 	
 	\begin{figure}[hbt!]	
 		\startchronology[startyear=1940, startdate=false, stopdate=false, arrow=false, color=codegray, height=.5ex]
@@ -129,104 +131,87 @@
 		\caption{Time line of significant RL algorithms}
 		\label{fig_TimeLine}
 	\end{figure}
-	Introduced in 1992, the REINFORCE algorithm \cite{REINFORCE-williams1992} is an early policy based RL algorithm, capable of handling both discrete and continuous observation and action spaces. In practice the REINFORCE algorithm is considered a ``weak'' algorithm and superseded by several algorithms developed since. Most notably the deep-neural network version of Q-Learning, the Deep Q-Network (DQN) \cite{DQN-mnih2013}, followed by Actor-Critic \cite{A2C-mnih2016} and one of the most robust modern-day algorithms, the Proximal Policy Optimization (PPO) \cite{PPO-schulman2017}, Fig. \ref{fig_TimeLine}. Our study takes a fresh look at REINFORCE, an otherwise neglected algorithm comparing it against three advanced algorithms, namely, DQN, Advantage Actor-Critic (A2C), and PPO. Secondly, while most RL studies are evaluated on Open AI Gym environments, our experiments cover the PdM problem using a custom built environment. In practice the milling tool is replaced after a set threshold. We use this ``deterministic preventive maintenance'' policy as the baseline for comparing the various policies. Our systematic evaluation, based on levels of environment difficulty, different bench-mark datasets and varying noise levels allow a broader comparison of the algorithms. Finally, we conduct statistical tests to ensure a robust statistical-evidence based conclusion.\\
+	Introduced in 1992, the REINFORCE algorithm \cite{REINFORCE-williams1992} is an early policy based RL algorithm, capable of handling both discrete and continuous observation and action spaces. In practice the REINFORCE algorithm is considered a ``weak'' algorithm and superseded by several algorithms developed since. Most notably the deep-neural network version of Q-Learning, the Deep Q-Network (DQN) \cite{DQN-mnih2013}, followed by Actor-Critic \cite{A2C-mnih2016} and one of the most robust modern-day algorithms, the Proximal Policy Optimization (PPO) \cite{PPO-schulman2017}, Fig. \ref{fig_TimeLine}. Our study takes a fresh look at REINFORCE, an otherwise neglected algorithm comparing it against three advanced algorithms, namely, DQN, Advantage Actor-Critic (A2C), and PPO. Secondly, while most RL studies are evaluated on OpenAI Gym environments, our experiments cover the PdM problem using a custom built environment. In practice the milling tool is replaced after a set threshold. We use this ``deterministic preventive maintenance'' policy as the baseline for comparing the various policies. Our systematic evaluation, based on levels of environment difficulty, different bench-mark datasets and varying noise levels allow a broader comparison of the algorithms. Finally, we conduct statistical tests to ensure a robust statistical-evidence based conclusion.\\
 	
 	The main contributions of this research are:
 	\begin{enumerate}
-		\item Contributes to the broader goal of AutoML and AutoRL for PdM.
+		\item Contributes to the broader goal of AutoRL for predictive maintenance.
 		\item Targeted toward industrial practitioners not accustomed to RL hyperparameter tuning.
-		\item Design and implement an RL environment for PdM of a milling machine.
+		\item Design and implement an RL environment for predictive maintenance of a milling machine.
 		\item Rigorous evaluation of four standard, untuned, RL algorithms.
+		\item \hlc{Research focus on the computationally light REINFORCE algorithm.}
 		\item Use of simple performance evaluation statistical measures and plots that industrial practitioners are normally used to.
 	\end{enumerate} 
 	
-	The rest of the paper is structured as follows: In the next section we survey some related work and provide the necessary technical background describing the algorithms studied in this research. Section \ref{sec_Method} discusses implementation details of the REINFORCE algorithm and the PdM environment followed by the methodology adopted for training, testing and evaluation. Section \ref{sec_Results} and \ref{sec_Discussion} present and discuss, the results of experiments. Finally, we summarize and draw conclusions in Section \ref{sec_Conclusion}.
+	The rest of the paper is structured as follows: In the next section we survey some related work and provide the necessary technical background describing the algorithms studied in this research. Sec. \ref{sec_Method} discusses implementation details of the REINFORCE algorithm and the PdM environment followed by the methodology adopted for training, testing and evaluation. Sec. \ref{sec_Results} and \ref{sec_Discussion} present and discuss, the results of experiments. Finally, we summarize and draw conclusions in Sec. \ref{sec_Conclusion}.
 	
 	\section{Related work and background}\label{sec_SLR}
-	In this section we survey the intersection of past work related to RL for PdM with experimental evaluation of real world applications, specifically milling machines and AutoRL.
+	In this section we survey the intersection of past work related to RL for PdM, specifically milling machines and AutoRL.
 	
 	\subsection{Literature Review}
 	\hlc{We reviewed related research to establish research gaps that we could address. Our work is meant to assist practitioners apply RL for predictive maintenance. It touches the dual fields of HPO (hyperparameter optimization) and the development of the AutoRL.} 
-
-	Application of RL for PdM has been surveyed by \cite{Panzer2021, Erhan2021, siraskar2023}. \hlc{There are no research articles that cover AutoRL for predictive maintenance. We therefore widened our scope and searched for AutoML for PdM resulting in 21 articles (of which were 14 were conference papers and 7 piblished in journals), Fig. {\ref{fig_artcilestats}}, however the research coverage remained limited to supervised machine learning and excluded RL and AutoRL.}\footnote{As of: 21-Dec-2024, across IEEE Xplore\texttrademark{}, Scopus\texttrademark{} and Web Of Science\texttrademark{}}.
+	
+	Application of RL for PdM has been surveyed by \cite{Panzer2021, Erhan2021, siraskar2023}. \hlc{There are no research articles that cover AutoRL for predictive maintenance. We therefore widened our scope and searched for AutoML for PdM resulting in 21 articles, of which 14 were conference papers and 7 published in journals, Fig. {\ref{fig_artcilestats}}, however the research coverage remained limited to supervised ML and excluded RL and AutoRL.}\footnote{As of: 21-Dec-2024, across IEEE Xplore\texttrademark{}, Scopus\texttrademark{} and Web Of Science\texttrademark{}}.
 	% trim=left botm right top. % \fbox{\includegraphics[trim=3.5cm 18.75cm 4cm 3.3cm]{articlestats.pdf}}
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=0.4\textwidth, trim={3.5cm 18.25cm 4cm 3.3cm}]{articlestats.pdf}
-		\caption{Research articles related to AutoML and PdM. None were found on AutoRL for PdM.}
+		\caption{\hlc{Research articles related to AutoML and PdM. None were found on AutoRL for PdM.}}
 		\label{fig_artcilestats}
 	\end{figure} 
 	
 	Experimental comparison of RL algorithms, has been limited to using standard benchmark OpenAI Gym environments: \cite{sandeep2022experimental} documents experimental evaluation of four policy-gradient and actor-critic algorithms PPO, Soft Actor Critic (SAC), Deep Deterministic Policy Gradient (DDPG) and A2C using the Pendulum, Mountain Car, Bipedal Walker, Lunar Landing and Atari 2600 game environments. \cite{Krishna2020} evaluate DQN, DoubleDQN, A2C, REINFORCE and PPO using Cartpole, Space Invaders and the Lunar Lander. \cite{dulac2021, dulac2020empirical} are significant contributions toward analyzing \textit{real-world} challenges. They performed empirical studies on Cartpole, humanoid and walker environments\footnote{From the Real-World Reinforcement Learning (RWRL) Suite} by embedding them with real-world design concepts and then evaluating REINFORCE, Trust Region Policy Optimization (TRPO) and DDPG.
 	
-	\cite{dulac2021, henderson2018deep} tackle RL for continuous control. \cite{henderson2018deep} evaluate DDPG, ACKTR, TRPO and PPO, using, like we do, the OpenAI baseline implementations, on complex MuJoCo\footnote{\href{https://mujoco.org/}{MuJoCo}: `Multi-Joint dynamics with Contact' e.g. HalfCheetah, Hopper, Walker and Swimmer} environments. \cite{ford2022cognitive} is one experimental evaluation we found based on a \textit{real-world} application where DQN, A2C and PPO are applied for choosing the operational radio frequency (RF) mode for a multi-function RF system and go on to suggest that PPO is the best.
+	\cite{dulac2021, henderson2018deep} evaluate RL for continuous control. \cite{henderson2018deep} study DDPG, ACKTR, TRPO and PPO, using, like we do, the OpenAI RL implementations, on complex MuJoCo\footnote{\href{https://mujoco.org/}{MuJoCo}: `Multi-Joint dynamics with Contact' e.g. HalfCheetah, Hopper, Walker and Swimmer} environments. \cite{ford2022cognitive} is one experimental evaluation we found covering a \textit{real-world} application where DQN, A2C and PPO are applied for choosing the operational radio frequency (RF) mode for a multi-function RF system and go on to recommend PPO as the best.
 	
 	%% Connecting AutoRl + HPO
-	\cite{autorl:parker2022} \hlc{is a detailed technical assessment and survey of the AutoRL field. They provide a deep dive into the techniques and methods to automate the RL training pipeline, outline the implied challenges and the open research questions that remain. They observe that it is the methods that can \textit{dynamically adapt hyperparameter} configurations during the training cycle that will generate the best models; however their study concluded that, despite substantial research, it is not yet clear which hyperparameters must be optimized dynamically and which statically. A second important conclusion was the acknowledgment that relation of hyperparameters to environments was as yet undetermined. They align with} \cite{Eimer2023AutoRL}, \hlc{that hyperparameter optimization will vary and be \textit{specific to an environment}}. 
-		
+	\hlc{None of the AutoRL articles covered PdM, we therefore study them for their contribution toward creating AutoRL frameworks in general}. \cite{autorl:parker2022} \hlc{is a detailed technical assessment and survey of the AutoRL field. They provide a deep dive into the techniques and methods to automate the RL training pipeline, outline the implied challenges and the open research questions that remain. They observe that it is the methods that can \textit{dynamically adapt hyperparameter} configurations during the training cycle that will generate the best models; however their study concluded that, despite substantial research, it is not yet clear which hyperparameters must be optimized dynamically and which statically. A second important conclusion was the acknowledgment that relation of hyperparameters to environments was as yet undetermined. They align with} \cite{Eimer2023AutoRL}, \hlc{that hyperparameter optimization will vary and be \textit{specific to an environment}}. 
+	
 	\cite{autorl:shala2022} \hlc{are the first to propose a \textit{tabular AutoRL benchmark} for studying the hyperparameters of RL algorithms. They have considered hyperparameter search spaces for five RL methods - PPO, DDPG, A2C, SAC and TD3, across 22 OpenGym, environments. They studied four hyperparameters of which only two were common across all five algorithms -- the learning rate and discount factor {$\gamma$}. They did not address any network design hyperparameter.}
 	
 	\hlc{The main contribution of} \cite{autorl:afshar2022} \hlc{is the proposition of a \textit{generalized AutoRL framework} split into three main components -- MDP (Markov Decision Process) modeling, algorithm selection and hyperparameter optimization.}
 	
-	\hlc{All AutoRL related work} \cite{autorl:afshar2022, autorl:parker2022, autorl:shala2022, Eimer2023AutoRL}, \hlc{point unanimously toward three research gaps: First, unlike AutoML pipelines, AutoRL as a usable framework has not yet been developed, second there is no ideal hyperparameter configuration setup that is clearly optimal for a all or even a set of environments, and third (industrial) domain specific work is required for AutoRL to be effective in solving real world problems.} 
+	\hlc{All AutoRL related work} \cite{autorl:afshar2022, autorl:parker2022, autorl:shala2022, Eimer2023AutoRL}, \hlc{point unanimously toward three research gaps: First, unlike AutoML pipelines, AutoRL as a usable framework has not yet been developed, second there is no ideal hyperparameter configuration setup that is clearly optimal for all or even a set of related environments, and third domain specific work is required for AutoRL to be effective in solving real world problems.} 
 	
 	\hlc{The authoritative{\footnote{A collaborative research effort between universities Oxford, Leibniz, Freiburg and organizations Google, Meta and Amazon}} work by} \cite{autorl:parker2022} \hlc{mention that as a completely closed-loop system, in RL, each of its component influences the other. This therefore poses a challenge for automatic tuning as any interim system evaluation (during training) is highly likely to be stochastic due to the interaction of various noise sources (e.g. policy, environment). They concluded that no AutoRL approach has been developed to offer the best combination of an algorithm itself and then its configuration}. 
 	
 	%% LR consolidate
-	\hlc{The literature survey helped identify the following open areas and helpful pointers for deeper research:}
+	\hlc{The literature survey helped identify the following open areas and helpful pointers for our research:}
 	\begin{enumerate}
-		\item \hlc{\textbf{Predictive maintenance} is an unexplored domain. Build an RL environment and agent for predictive maintenance.}
+		\item \hlc{\textbf{Predictive maintenance} is an unexplored domain. Build a predictive maintenance RL environment and train an agent for taking maintenance actions.}
 		\item \hlc{The \textbf{REINFORCE} algorithm has not been studied and evaluated within a PdM environment.}
-		\item \hlc{A comparison of \textbf{untuned} RL methods may enhance our understanding of how to best to create automated techniques to address the interaction between algorithm and hyperparameter settings.}
+		\item \hlc{A comparison of \textbf{untuned} RL methods may enhance our understanding of how best to create automated techniques to address the interaction between algorithm and hyperparameter settings.}
 		\item \hlc{A good selection of \textbf{common hyperparameters} across the algorithms are the learning rate and discount factor {$\gamma$}.}
 		\item \hlc{None of the AutoRL comparative studies covered network architecture elements - consider covering at least one important \textbf{network hyperparameter}}.
 	\end{enumerate}
-
-	\hlc{Our work focuses on RL. Supervised machine learning can be used to solve such problems i.e. detect when the fault part needs replacement. As a final part of this existing literature study, we briefly table related \textit{machine learning} work that we can compare to, in the Discussion section {\ref{sec_Discussion}}}
-
-
+	
+	\hlc{Our work focuses on RL. Supervised machine learning can be used to solve such problems i.e. detect when the fault part needs replacement. As a final part of this existing literature study, we briefly table related ML work in Table {\ref{tbl_ml}} that we can compare to, later in the Discussion Sec. {\ref{sec_Discussion}}}
+	
 	\begin{table}[hbtp!]
-	\rowspace{1.5}
-	\caption{\hlc{ML based solutions for similar predictive maintenance problem.}}%\label{tab1}%
-	{\begin{tabular}[h]{L{4cm} L{4cm} L{2.75cm} R{1.25cm} L{3cm}}
-			\arrayrulecolor{black!40}\toprule
-			\hlc{ML technique} & \hlc{Time series} & \hlc{Research article} & \hlc{Accuracy} & \hlc{Domain - use-case} \\
-			\midrule	
-			Support Vector Machine & Time domain, multivariate & \citeauthor{niu2020-93ML} \cite{niu2020-93ML} & 0.967 & \multirow{8}{3cm}{Milling tool-wear condition monitoring}\\
-			k-Nearest Neighbour & Time-domain with wavelet transforms & \citeauthor{yang2020-94ML} \cite{yang2020-94ML} & 0.948 & \\
-			Support Vector Machine & Time-domain with wavelet transforms & \citeauthor{lei2020-95ML} \cite{lei2020-95ML} & 0.908 & \\
-			Support Vector Machine & Time and frequency domain & \citeauthor{zhou2020-96ML} \cite{zhou2020-96ML} & 0.908 & \\
-			Support Vector Machine & Time domain, multivariate & \citeauthor{ou2020-97ML} \cite{ou2020-97ML} & 0.918 & \\
-			Naive Bayes and k-star & Time domain, multivariate & \citeauthor{madhusudana2016-64ML} \cite{madhusudana2016-64ML} & 0.969 & \\
-			Tree family classifiers & Time domain, multivariate & \citeauthor{patange2019-23ML} \cite{patange2019-23ML} & 0.890 & \\
-			Calibration-model & Time domain, multivariate & \citeauthor{liu2020-92ML} \cite{liu2020-92ML} & 0.900 & \\ \midrule
-			CNN with Attention Knowledge Distillation & Time domain, multivariate & \citeauthor{fu2023ML} \cite{fu2023ML} & 0.972 & \multirow{2}{3cm}{Bearings: Classification of faults}\\
-			CNN based LeNet & Time domain, multivariate & \citeauthor{pandey2023ML} \cite{pandey2023ML} & 0.953 & \\ \midrule
-			Nadaraya-Watson Attention mechanism & Time domain, univariate & \citeauthor{Siraskar2024ML} \cite{Siraskar2024ML} & 0.984 & \multirow{2}{3.5cm}{Milling tool-wear fault detection. Performance in $R^2$}\\
-			Nadaraya-Watson Attention mechanism & Time domain, multivariate & \citeauthor{Siraskar2024ML} \cite{Siraskar2024ML} & 0.834 & \\
-
-			\bottomrule
-	\end{tabular}}
-	%\footnotetext[-]{Note: ``NA'' implies not-available or not-applicable.}
-	\label{tbl_ml}
-\end{table}
-
-%	%% ##################
-%	%% For SA discussion +
-%   %% for ML PART
-%	%% ##################
-%		 	EG. HYPS = lr, gamma, clip >> 	
-%		\textcolor{red}{For example, it is known that smaller values of gamma 	lead to faster convergence but might result in myopic policies [39]. Increasing the discounting 	value over time can drastically speed up learning [40]. Further, François-Lavet et al. [40] showed 	that simultaneously decreasing the learning rate while increasing 	improves learning speeds even further.}
-%	
-%	\textcolor{red}{from the PARKER HOLDER } \cite{autorl:parker2022} ---- This paper has introduced AutoRL by discussing a wide variety of methods to automate the
-%	RL training pipeline. Indeed, unlike supervised learning, which is usually an open-loop onestep
-%	process, RL is a complete closed-loop system. As such, it is likely each of the components
-%	discussed has an influence on others, and if we want to train our agents end-to-end as part of
-%	a broader system, it ultimately will require a holistic solution. The challenge is compounded
-%	in RL since evaluations in RL are almost always necessarily stochastic and (potentially much
-%	more) noisy than in supervised learning, due to various sources (e.g. policy, environment),
-%	which can be a challenge for any form of automatic tuning
-%	
+		\rowspace{1.5}
+		\caption{\hlc{ML based solutions for similar predictive maintenance problem.}}%\label{tab1}%
+		{\begin{tabular}[h]{L{4cm} L{4cm} L{2.75cm} R{1.25cm} L{3cm}}
+				\arrayrulecolor{black!40}\toprule
+				\hlc{ML technique} & \hlc{Time series} & \hlc{Research article} & \hlc{Accuracy} & \hlc{Domain - use-case} \\
+				\midrule	
+				Support Vector Machine & Time domain, multivariate & \citeauthor{niu2020-93ML} \cite{niu2020-93ML} & 0.967 & \multirow{8}{3cm}{Milling tool-wear condition monitoring}\\
+				k-Nearest Neighbour & Time-domain with wavelet transforms & \citeauthor{yang2020-94ML} \cite{yang2020-94ML} & 0.948 & \\
+				Support Vector Machine & Time-domain with wavelet transforms & \citeauthor{lei2020-95ML} \cite{lei2020-95ML} & 0.908 & \\
+				Support Vector Machine & Time and frequency domain & \citeauthor{zhou2020-96ML} \cite{zhou2020-96ML} & 0.908 & \\
+				Support Vector Machine & Time domain, multivariate & \citeauthor{ou2020-97ML} \cite{ou2020-97ML} & 0.918 & \\
+				Naive Bayes and k-Star & Time domain, multivariate & \citeauthor{madhusudana2016-64ML} \cite{madhusudana2016-64ML} & 0.969 & \\
+				Tree family classifiers & Time domain, multivariate & \citeauthor{patange2019-23ML} \cite{patange2019-23ML} & 0.890 & \\
+				Calibration model (reference signal based) & Time domain, multivariate & \citeauthor{liu2020-92ML} \cite{liu2020-92ML} & 0.900 & \\ \midrule
+				CNN with Attention Knowledge Distillation & Time domain, multivariate & \citeauthor{fu2023ML} \cite{fu2023ML} & 0.972 & \multirow{2}{3cm}{Bearings: Classification of faults}\\
+				CNN based LeNet & Time domain, multivariate & \citeauthor{pandey2023ML} \cite{pandey2023ML} & 0.953 & \\ \midrule
+				Nadaraya-Watson Attention mechanism & Time domain, univariate & \citeauthor{Siraskar2024ML} \cite{Siraskar2024ML} & 0.984 & \multirow{2}{3.5cm}{Milling tool-wear fault detection. Performance in $R^2$}\\
+				Nadaraya-Watson Attention mechanism & Time domain, multivariate & \citeauthor{Siraskar2024ML} \cite{Siraskar2024ML} & 0.834 & \\
+				
+				\bottomrule
+		\end{tabular}}
+		%\footnotetext[-]{Note: ``NA'' implies not-available or not-applicable.}
+		\label{tbl_ml}
+	\end{table}	
 	
 	\subsection{Technical Background}
 	\subsubsection*{Key concepts of RL}
@@ -290,11 +275,11 @@
 		{\begin{tabular}[h]{L{2cm} L{7cm} L{3.5cm}}
 				\arrayrulecolor{black!40}\toprule
 				\textbf{\hlc{Empirical cycle phase}}&\textbf{\hlc{Our process step}}&\textbf{\hlc{Reference}}\\ \midrule
-				\hlc{Observation}&\hlc{Preliminary experiments demonstrated good results for the REINFORCE on the predictive maintenance problem}.&\\
+				\hlc{Observation}&\hlc{Preliminary experiments demonstrated good results for the REINFORCE on the PdM problem}.&\\
 				\hlc{Induction}&\hlc{Formulate a high-level hypothesis based on the preliminary observations. Use model performance metrics - precision recall and F1-score}. & \makecell[l]{$H_0: \mu_{RF}-\mu_{AA}=0.$\\$H_a: \mu_{RF}-\mu_{AA} > 0$}\\
-				\hlc{Deduction} & \hlc{Design and build an experimentation set-up. Design a set of experiments to test hypothesis}.&Implementation section \ref{sec_Hypothesistesting}\\
-				\hlc{Testing} & \hlc{Conduct the experiments and collect data}.& Experiment results (section \ref{sec_Results}), Sensitivity analysis (section \ref{sec_SA})\\
-				\hlc{Evaluation} & \hlc{Evaluate and present the test results. Table the interpretations based on abductive reasoning}.&Results and discussion sections \ref{sec_Results}, \ref{sec_Discussion}\\		
+				\hlc{Deduction} & \hlc{Design and build an experimentation set-up. Design a set of experiments to test the hypothesis}.&Implementation Sec. \ref{sec_Hypothesistesting}\\
+				\hlc{Testing} & \hlc{Conduct the experiments and collect data}.& Experiment results (Sec. \ref{sec_Results}), Sensitivity analysis (Sec. \ref{sec_SA})\\
+				\hlc{Evaluation} & \hlc{Evaluate and present the test results. Present the interpretations based on abductive reasoning}.&Results and discussion sections \ref{sec_Results}, \ref{sec_Discussion}\\		
 				\bottomrule
 		\end{tabular}}
 		\label{tbl_method}
@@ -333,7 +318,7 @@
 	We used the parameter values provided in the paper $a=0.08257$, $b1=0.3342$ and $b2=0.03147$ to simulate 120 data points. Fig. \ref{fig_simulated} shows the tool wear simulated using \eqref{eq_Dasic}, with the red dotted-line indicating the wear threshold beyond which tool is replaced. This provided the mechanism to simulate the basic variant of tool-wear based \textbf{univariate state}. We then added two further levels of increased complexity using noise and a chance of breakdown, giving us three distinct environments. 
 	
 	\subsubsection*{Actual tool wear data}\label{sec_PHMdata}
-	The IEEE\textit{DataPort} hosts the ``2010 PHM Society'' tool-wear data obtained from a high-speed CNC milling machine, \cite{PHM-dataset}. C01, C04 and C06 datasets are suggested as benchmarks to be used for machine learning research and were the ones we used\footnote{In the article, we often refer to these datasets as ``PHM-'' data.}. The data is from seven sensors -- dynamometer measuring forces in X, Y and Z dimensions, measured in $N$; accelerometer measuring vibration in X, Y and Z dimensions, measured in $g$ and finally acoustic emission data as AE-RMS, in $V$. A separate file contains tool wear data in $mm$. Figures \ref{fig_C01}, \ref{fig_C04} and \ref{fig_C06} show the tool wear for the three datasets. We use real data to create two state designs, an univariate state consisting of only the tool wear and a \textbf{multivariate} state designed using all the additional seven sensor values. Just as we did for the simulated case, the complexity of the univariate state is increased using two levels of noise and break-down parameters. The multivariate state is complex in itself. \hlc{Fig. {\ref{fig_PHMDataVariability}} shows a comparison of the dataset features along with the intrinsic variability. We selected these datasets for this inherent variability and this shows up as variation in performance across the datasets, as we shall see in the {\ref{sec_Results}} section later}. An indicative plot of PHM-C06 feature data, Fig. \ref{fig_PHMMSdata}, demonstrates the inherent feature complexity and we therefore use the natural (without noise) form. 
+	The IEEE\textit{DataPort} hosts the ``2010 PHM Society'' tool-wear data obtained from a high-speed CNC milling machine, \cite{PHM-dataset}. C01, C04 and C06 datasets are suggested as benchmarks to be used for machine learning research and were the ones we used\footnote{In the article, we often refer to these datasets as ``PHM-'' data.}. The data is from seven sensors -- dynamometer measuring forces in X, Y and Z dimensions, measured in $N$; accelerometer measuring vibration in X, Y and Z dimensions, measured in $g$ and finally acoustic emission data as AE-RMS, in $V$. A separate file contains tool wear data in $mm$. Figures \ref{fig_C01}, \ref{fig_C04} and \ref{fig_C06} show the tool wear for the three datasets. We use real data to create two state designs, an univariate state consisting of only the tool wear and a \textbf{multivariate} state designed using all the additional seven sensor values. Just as we did for the simulated case, the complexity of the univariate state is increased using two levels of noise and break-down parameters. The multivariate state is complex in itself. \hlc{Fig. {\ref{fig_PHMDataVariability}} shows a comparison of the dataset features along with the intrinsic variability. We selected these datasets for this inherent variability and this shows up as variation in performance across the datasets, as we shall see in Sec. {\ref{sec_Results}} later}. An indicative plot of PHM-C06 feature data, Fig. \ref{fig_PHMMSdata}, demonstrates the inherent feature complexity and we therefore use the natural (without noise) form. 
 	
 	%% $$$ R1-6 10 Data Variability
 	\begin{figure}[hbt!]
@@ -341,7 +326,7 @@
 		\subfigure[\hlc{PHM-C01 dataset}]{\includegraphics[width=0.325\textwidth]{C01_Features.pdf}}
 		\subfigure[\hlc{PHM-C04 dataset}]{\includegraphics[width=0.325\textwidth]{C04_Features.pdf}}
 		\subfigure[\hlc{PHM-C06 dataset}]{\includegraphics[width=0.325\textwidth]{C06_Features.pdf}}
-		\caption{\hlc{Feature variability across datasets.}}
+		\caption{\hlc{Feature variability across datasets. Values are normalized to visualize relative variability.}}
 		\label{fig_PHMDataVariability}
 	\end{figure}
 	\begin{figure}[hbt!]
@@ -351,7 +336,7 @@
 		\label{fig_PHMMSdata}
 	\end{figure} 
 	
-
+	
 	
 	In practice, state variables are often normalized to improve stability and convergence. Both the simulated and real data was normalized using min-max scaling such that the tool wear and other state features, $x \in [0,\;1] \subset \mathbb{R} $. We will see next how this allows adding white noise of similar magnitudes across different PHM datasets.
 	
@@ -410,7 +395,7 @@
 	\subsubsection*{State and environment elements}
 	There are two basic state definitions across the 15 environment variants, the ``simple univariate'' and the ``complex multivariate''. 
 	
-	The elements of simple univariate state vector are $S_t = [w_t]$, where $w_t$ is the current tool wear. As part of the environment other elements that are sensed by the agent are $[W_\tau, N_f, P_{bd}]$, where $W_\tau$ is the wear threshold, $N_f$ is the noise factor and is one of [0, 1e-3, 1e-2], $P_{bd}$ is the chance of tool breakdown and is one of [0, 0.05, 0.10]. The complex multivariate state $S_t = [f_x, f_y, f_z, v_x, v_y, v_z, ae_{rms}, w_t]$ where, as mentioned in Section \ref{sec_PHMdata}, $(f_x, f_y, f_z)$ represents the force along the 3 axes, similarly $v$ represents the vibration, $ae_{rms}$ the acoustic emission.
+	The elements of simple univariate state vector are $S_t = [w_t]$, where $w_t$ is the current tool wear. As part of the environment other elements that are sensed by the agent are $[W_\tau, N_f, P_{bd}]$, where $W_\tau$ is the wear threshold, $N_f$ is the noise factor and is one of [0, 1e-3, 1e-2], $P_{bd}$ is the chance of tool breakdown and is one of [0, 0.05, 0.10]. The complex multivariate state $S_t = [f_x, f_y, f_z, v_x, v_y, v_z, ae_{rms}, w_t]$ where, as mentioned in Sec. \ref{sec_PHMdata}, $(f_x, f_y, f_z)$ represents the force along the 3 axes, similarly $v$ represents the vibration, $ae_{rms}$ the acoustic emission.
 	
 	\subsubsection*{Actions}
 	The action space is binary, $\mathcal{A} \in [0, 1]$, where $0$ ($\texttt{CONTINUE}$) represents continuation of milling operation and $1$ ($\texttt{REPLACE\_TOOL}$) represents the action of replacing the tool.
@@ -510,7 +495,7 @@
 	The training strategy must ensure a uniform comparison of the algorithms. We maintained the exact \textit{same} environment variant, wear dataset, noise parameter, probability of breakdown parameter, and the three reward function parameters; across all four algorithms during a single training round. %Our code is fairly automated and we used a configuration file to configure the training experiments and record the test results. Fig. \ref{fig_exptconfig} shows the main columns of the configuration file we used.
 	As the wear data is time-series data, the training and test sets are created by systematic sampling. Simulated data and real tool wear data (PHM) was randomly sampled at a certain frequency and down sampled into training and test sets.
 	
-	The REINFORCE was trained for 800 episodes for the simulated and PHM univariate variants, for all three noise and breakdown levels (none, low and high) -- Table \ref{tbl_ListEnvironments} items 1-12. For the PHM multivariate variant, Table \ref{tbl_ListEnvironments} items 13-15, REINFORCE was trained for 1000 episodes. SB3 algorithms were trained for 10,000 episodes for all variants. We ran ten rounds of training, tested each generated model and averaged results over the 10 rounds. Testing is explained in the next section while results are presented in Section \ref{sec_Results}.
+	The REINFORCE was trained for 800 episodes for the simulated and PHM univariate variants, for all three noise and breakdown levels (none, low and high) -- Table \ref{tbl_ListEnvironments} items 1-12. For the PHM multivariate variant, Table \ref{tbl_ListEnvironments} items 13-15, REINFORCE was trained for 1000 episodes. SB3 algorithms were trained for 10,000 episodes for all variants. We ran ten rounds of training, tested each generated model and averaged results over the 10 rounds. Testing is explained in the next section while results are presented in Sec. \ref{sec_Results}.
 	
 	\begin{figure}
 		\centering	
@@ -589,14 +574,14 @@
 	
 	%% $$$ R1-3
 	\hlc{For a classification problem, the choice of precision versus recall will depend on the industry and application}. Timely replacements, $TP$, ensure work piece quality \hlc{while still maintaining minimal production downtime. Precision is driven by lower $FP$s i.e. reducing unnecessary replacements. A high recall is necessary in several critical industrial environments, where failing to replace the tool can lead to serious consequences, demanding lower $FN$s.} \hlc{Depending on the industrial application one can use a \textit{weighted} F1-score equation} (\ref{eq_Fbeta}) \hlc{that is oriented toward precision or recall}. For high precision applications set a $\beta < 1.0$; \hlc{for applications demanding higher recall, set a $\beta > 1.0$.} For \hlc{this research} we set $\beta$ to $0.5$ and \hlc{suggest setting $\beta$ to $2.0$ for applications where recall is critical}.
-		
+	
 	\begin{equation}
 		F_{\beta} = (1+\beta^2) \cdot \frac{(Pr \times Rc)}{(\beta^2 \cdot Pr + Rc)}
 		\label{eq_Fbeta}
 	\end{equation}
 	
 	%% $$$ R1-6	CI
-	\hlc{Throughout the article we use 95\% confidence intervals (CI) to quantify the uncertainty of the metrics and provide an indication of the robustness. In the Results section {\ref{sec_Results}}, these are presented in the results tables (columns titled '95\% CI') and as error-bars in the accompanying plots.}
+	\hlc{Throughout the article we use 95\% confidence intervals (CI) to quantify the uncertainty of the metrics and provide an indication of the robustness. In the Results Sec. {\ref{sec_Results}}, these are presented in the results tables (columns titled '95\% CI') and as error-bars in the accompanying plots.}
 	
 	\section{Results}\label{sec_Results}
 	We present the summarized results in this section accompanied by commentary referring to detailed results made available in Appendix \ref{apx}. Since there are several tables and figures, for reference, we created a cross-linked Table \ref{tbl_ref-results}. Generally, \textcolor{dblue}{blue} text is used in tables to highlight prominent values. Summary performance and F$_\beta$0.5 plots accompany tables to assist in visualizing the comparative performance. The F$_\beta$0.5 plots show \textit{individual} performance over ten rounds of training-validation and help infer training stability. Similar plots for precision, recall and F1 have been relegated to Appendix \ref{apx}.
@@ -649,16 +634,16 @@
 		\caption{\hlc{Model performance summary - averaged over all environments.}}
 		{\begin{tabular}
 				{@{}l rrr c rrr c rrr c rrr@{}}
-						\arrayrulecolor{black!40}\toprule
-						& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
-						\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
-						&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
-						A2C & 0.449 & 0.088 & \makecell{(0.443,\\ 0.455)} & &0.480 & 0.084 & \makecell{(0.474,\\ 0.485)} & & 0.442 & 0.070 & \makecell{(0.437,\\ 0.446)} & &0.436 &0.071 & \makecell{(0.431,\\ 0.440)} \\ \arrayrulecolor{gray!30} \midrule
-						DQN & 0.418 & 0.185 & \makecell{(0.406,\\ 0.430)} & &0.504 & 0.032 & \makecell{(0.502,\\ 0.506)} & & 0.374 & 0.035 & \makecell{(0.372,\\ 0.376)} & &0.348 &0.058 & \makecell{(0.344,\\ 0.351)} \\\midrule
-						PPO & 0.472 & 0.144 & \makecell{(0.463,\\ 0.482)} & &0.316 & 0.087 & \makecell{(0.310,\\ 0.321)} & & 0.345 & 0.091 & \makecell{(0.339,\\ 0.351)} & &0.393 &0.105 & \makecell{(0.386,\\ 0.400)} \\\midrule
-						REINFORCE & \textcolor{dblue}{0.687} & 0.059 & \makecell{(0.683,\\ 0.691)} & &\textcolor{dblue}{0.629} & 0.051 & \makecell{(0.626,\\ 0.633)} & & \textcolor{dblue}{0.609} & 0.050 & \makecell{(0.606,\\ 0.612)} & & \textcolor{dblue}{0.631} &0.052 & \makecell{(0.627,\\ 0.634)} \\						
-						\bottomrule
-				\end{tabular}}
+				\arrayrulecolor{black!40}\toprule
+				& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
+				\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
+				&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
+				A2C & 0.449 & 0.088 & \makecell{(0.443,\\ 0.455)} & &0.480 & 0.084 & \makecell{(0.474,\\ 0.485)} & & 0.442 & 0.070 & \makecell{(0.437,\\ 0.446)} & &0.436 &0.071 & \makecell{(0.431,\\ 0.440)} \\ \arrayrulecolor{gray!30} \midrule
+				DQN & 0.418 & 0.185 & \makecell{(0.406,\\ 0.430)} & &0.504 & 0.032 & \makecell{(0.502,\\ 0.506)} & & 0.374 & 0.035 & \makecell{(0.372,\\ 0.376)} & &0.348 &0.058 & \makecell{(0.344,\\ 0.351)} \\\midrule
+				PPO & 0.472 & 0.144 & \makecell{(0.463,\\ 0.482)} & &0.316 & 0.087 & \makecell{(0.310,\\ 0.321)} & & 0.345 & 0.091 & \makecell{(0.339,\\ 0.351)} & &0.393 &0.105 & \makecell{(0.386,\\ 0.400)} \\\midrule
+				REINFORCE & \textcolor{dblue}{0.687} & 0.059 & \makecell{(0.683,\\ 0.691)} & &\textcolor{dblue}{0.629} & 0.051 & \makecell{(0.626,\\ 0.633)} & & \textcolor{dblue}{0.609} & 0.050 & \makecell{(0.606,\\ 0.612)} & & \textcolor{dblue}{0.631} &0.052 & \makecell{(0.627,\\ 0.634)} \\						
+				\bottomrule
+		\end{tabular}}
 		\label{tbl_OverallSummary}
 	\end{table}		
 	
@@ -715,23 +700,23 @@
 	
 	\subsection{Real data - simple univariate environment}
 	\begin{table} % $$$: CI R1-6
-	\rowspace{1.3}
-	\caption{\hlc{Model performance summary - averaged over PHM-2010 environments with simple single-variable environment.}}
-	{\begin{tabular}
-			{@{}l rrr c rrr c rrr c rrr@{}}
-			\arrayrulecolor{black!40}\toprule
-			& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
-			\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
-			&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
-			A2C & 0.447 & 0.077 & \makecell{(0.442,\\ 0.452)} & &0.477 & 0.091 & \makecell{(0.471,\\ 0.483)} & & 0.452 & 0.072 & \makecell{(0.448,\\ 0.457)} & &0.446 &0.070 & \makecell{(0.442,\\ 0.451)} \\
-			DQN & 0.419 & 0.179 & \makecell{(0.408,\\ 0.431)} & &0.507 & 0.032 & \makecell{(0.505,\\ 0.509)} & & 0.379 & 0.036 & \makecell{(0.376,\\ 0.381)} & &0.352 &0.057 & \makecell{(0.348,\\ 0.355)} \\
-			PPO & 0.450 & 0.146 & \makecell{(0.440,\\ 0.459)} & &0.314 & 0.082 & \makecell{(0.309,\\ 0.319)} & & 0.333 & 0.087 & \makecell{(0.327,\\ 0.339)} & &0.374 &0.102 & \makecell{(0.367,\\ 0.381)} \\
-			REINFORCE & \textcolor{dblue}{0.605} & 0.046 & \makecell{(0.602,\\ 0.608)} & &\textcolor{dblue}{0.603} & 0.046 & \makecell{(0.600,\\ 0.606)} & & \textcolor{dblue}{0.570} & 0.041 & \makecell{(0.567,\\ 0.572)} & &\textcolor{dblue}{0.576} &0.040 & \makecell{(0.574,\\ 0.579)} \\		
-			\bottomrule
-	\end{tabular}}
-	\label{tbl_PHMSS}
+		\rowspace{1.3}
+		\caption{\hlc{Model performance summary - averaged over PHM-2010 environments with simple single-variable environment.}}
+		{\begin{tabular}
+				{@{}l rrr c rrr c rrr c rrr@{}}
+				\arrayrulecolor{black!40}\toprule
+				& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
+				\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
+				&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule						
+				A2C & 0.447 & 0.077 & \makecell{(0.442,\\ 0.452)} & &0.477 & 0.091 & \makecell{(0.471,\\ 0.483)} & & 0.452 & 0.072 & \makecell{(0.448,\\ 0.457)} & &0.446 &0.070 & \makecell{(0.442,\\ 0.451)} \\
+				DQN & 0.419 & 0.179 & \makecell{(0.408,\\ 0.431)} & &0.507 & 0.032 & \makecell{(0.505,\\ 0.509)} & & 0.379 & 0.036 & \makecell{(0.376,\\ 0.381)} & &0.352 &0.057 & \makecell{(0.348,\\ 0.355)} \\
+				PPO & 0.450 & 0.146 & \makecell{(0.440,\\ 0.459)} & &0.314 & 0.082 & \makecell{(0.309,\\ 0.319)} & & 0.333 & 0.087 & \makecell{(0.327,\\ 0.339)} & &0.374 &0.102 & \makecell{(0.367,\\ 0.381)} \\
+				REINFORCE & \textcolor{dblue}{0.605} & 0.046 & \makecell{(0.602,\\ 0.608)} & &\textcolor{dblue}{0.603} & 0.046 & \makecell{(0.600,\\ 0.606)} & & \textcolor{dblue}{0.570} & 0.041 & \makecell{(0.567,\\ 0.572)} & &\textcolor{dblue}{0.576} &0.040 & \makecell{(0.574,\\ 0.579)} \\		
+				\bottomrule
+		\end{tabular}}
+		\label{tbl_PHMSS}
 	\end{table}		
-
+	
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=0.6\textwidth, trim={1.5cm 7cm 1cm 7cm}]{PHMSSPlot.pdf}  
@@ -790,7 +775,7 @@
 				& \multicolumn{3}{c}{Precision} &  & \multicolumn{3}{c}{Recall} & & \multicolumn{3}{c}{F1-score} &  & \multicolumn{3}{c}{F$_\beta$0.5} \\
 				\cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12} \cmidrule{14-16} 
 				&Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean &SD &\hlc{95\% CI} & &Mean & SD &\hlc{95\% CI}\\ \midrule	
-									
+				
 				A2C & 0.520 & 0.031 & \makecell{(0.518,\\ 0.522)} & &0.859 & 0.053 & \makecell{(0.855,\\ 0.862)} & & 0.639 & 0.036 & \makecell{(0.636,\\ 0.641)} & &0.560 &0.032 & \makecell{(0.558,\\ 0.563)} \\
 				DQN & 0.651 & 0.022 & \makecell{(0.649,\\ 0.652)} & &0.937 & 0.031 & \makecell{(0.935,\\ 0.939)} & & 0.740 & 0.022 & \makecell{(0.739,\\ 0.742)} & &0.678 &0.021 & \makecell{(0.677,\\ 0.680)} \\
 				PPO & 0.558 & 0.076 & \makecell{(0.553,\\ 0.563)} & &0.643 & 0.097 & \makecell{(0.636,\\ 0.649)} & & 0.580 & 0.079 & \makecell{(0.575,\\ 0.585)} & &0.562 &0.075 & \makecell{(0.557,\\ 0.567)} \\
@@ -853,20 +838,37 @@
 		\label{tbl_ttest}
 	\end{table}
 	
-	%% $$$ Sensitivity analysis
-	\subsection{\hlc{Sensitivity analysis of hyperparameters on the REINFORCE algorithm}}\label{sec_SA}
-		
-	\hlc{RL algorithms are known to be extremely sensitive to hyperparameter and network architecture settings,} \cite{henderson2018deep, andrychowicz2021matters}. \cite{Eimer2023AutoRL} \hlc{show that the often overlooked
-	hyperparameters, such as the discount factor $\gamma$, can significantly impact the RL algorithm`s success}.
+	\subsubsection{Training times \hlc{and model byte size}}
+	Our final set of results are related to the training time required \hlc{and size of models produced}, for each algorithm. The na\"ive REINFORCE algorithm is extremely slow, with a very high variance in training time, as seen in Fig. \ref{fig_tr-time}.
+	\begin{figure}[hbt!]
+		\centering
+		\includegraphics[width=0.5\linewidth]{Model_training_time.pdf}  
+		\caption{Training time, averaged over 10 rounds and all 15 variants.}
+		\label{fig_tr-time}
+	\end{figure}
 	
-	\hlc{As a simple algorithm, REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the network activation functions - thus covering hyperparameters as well as network architecture. Recent research on how RL hyperparameters should be tuned by} \cite{Eimer2023AutoRL}, \hlc{is a significant contribution to the RL field.}
-
+	%% $$$ R2-2 Runtime
+	\hlc{The model sizes produced by all algorithms is extremely small: A2C 89.8 KB, DQN 56.4 KB, PPO 135.5 KB and REINFORCE 121.5 KB. We see that the DQN produced the smallest while the PPO produced the largest.}
+	
+	%% $$$ Sensitivity analysis
+	\subsection{\hlc{Sensitivity analysis of hyperparameters on the REINFORCE algorithm}}\label{sec_SA}		
+	\subsubsection*{\hlc{Selection of hyperparameters for analysis}}
+	\hlc{RL algorithms are known to be extremely sensitive to hyperparameter and network architecture settings,} \cite{henderson2018deep, andrychowicz2021matters}. \hlc{We conduct a basic hyperparameter interaction and sensitivity analysis in this section. To select the best hyperparameters to conduct the sensitivity analysis, we referred to recent research} \cite{autorl:shala2022}, \cite{Eimer2023AutoRL},  \hlc{and} \cite{Lavet2016}. \cite{autorl:shala2022} \hlc{created the ``AutoRL-Bench 1.0'' for benchmarking AutoRL performance. We selected the {\textit{same}} common hyperparameters they studied across all RL algorithms they benchmark i.e. learning rate and the discount factor $\gamma$.} \cite{Lavet2016} \hlc{studied empirically, the impact of exactly these two hyperparameters and their impact on performance and instabilities of RL neural networks. Finally, } \cite{Eimer2023AutoRL} \hlc{mention how some often overlooked hyperparameters, such as the discount factor, significantly impacts the algorithm's performance. In addition to these suggestions, we selected the network activation function for analysis, thus covering network architecture as well.}
+	
+	\hlc{\textbf{Our hyperparameter space}:} \vspace{-6pt}
+	\begin{enumerate}    
+		\item \hlc{Learning rate: $1\times10^{-4}$, $5\times10^{-4}$, $1\times10^{-3}$, $ 5\times10^{-3}$, $1\times10^{-2}$}
+		\item \hlc{Discount factor $\gamma$: $0.90$, $0.95$, $0.99$}
+		\item \hlc{Network activation: Hyperbolic Tangent (Tanh) and Rectified Linear Unit (ReLU)}
+	\end{enumerate}
+	
+	\hlc{For our analysis we will train the model and compute the average episodic rewards, over 10 rounds of training. Fig. {\ref{fig_SA_LR_Relu}} shows the impact of changing learning rates on the average episodic rewards, for a particular $\gamma$ value, with the network activation function set to ReLU. Similarly Fig. {\ref{fig_SA_LR_Tanh}} shows the impact when the activation function is changed to Tanh. We observe that the optimal settings are the higher learning rates $5\times10^{-3} - 1\times10^{-2}$ and highest $\gamma$ value $0.99$, using the ReLU activation function.}
 	
 	\begin{figure}[hbt!]
 		\centering	
-		\subfigure[\hlc{Discount factor  $\gamma$=0.90}]{\label{fig_SA_G90_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p9_ReLU.pdf}}
-		\subfigure[\hlc{Discount factor  $\gamma$=0.95}]{\label{fig_SA_G95_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p95_ReLU.pdf}}
-		\subfigure[\hlc{Discount factor  $\gamma$=0.99}]{\label{fig_SA_G99_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p99_ReLU.pdf}}		
+		\subfigure[\hlc{Discount factor $\gamma$=0.90}]{\label{fig_SA_G90_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p9_ReLU.pdf}}
+		\subfigure[\hlc{Discount factor $\gamma$=0.95}]{\label{fig_SA_G95_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p95_ReLU.pdf}}
+		\subfigure[\hlc{Discount factor $\gamma$=0.99}]{\label{fig_SA_G99_R}\includegraphics[width=0.325\textwidth]{SA_Gamma_0p99_ReLU.pdf}}		
 		\caption{\hlc{Impact of changing learning rates and discount factor $\gamma$ for a REINFORCE policy network with ReLU activation.}}
 		\label{fig_SA_LR_Relu}
 	\end{figure}
@@ -880,14 +882,9 @@
 		\label{fig_SA_LR_Tanh}
 	\end{figure}
 	
-	\subsubsection{Training times \hlc{and model byte size}}
-	Our final set of results are related to the training time required \hlc{and size of models produced}, for each algorithm. The na\"ive REINFORCE algorithm is extremely slow, with a very high variance in training time, as seen in Fig. \ref{fig_tr-time}.
-	\begin{figure}[hbt!]
-		\centering
-		\includegraphics[width=0.6\linewidth]{Model_training_time.pdf}  
-		\caption{Training time, averaged over 10 rounds and all 15 variants.}
-		\label{fig_tr-time}
-	\end{figure}
+	\subsubsection*{\hlc{Impact of hyperparameter setting on training time}}
+	\hlc{While REINFORCE performs reasonably well, it needs substantial time to train. To understand this better, we analyze it with respect to the same hyperparameter settings. In Fig.{\ref{fig_SA_TT_LR}}, we plot the time to train in panels of increasing learning rate, and in  Fig.{\ref{fig_SA_TT_G}}, we plot against panels of increasing {$\gamma$}. It is interesting to see that for Tanh based activation the training time increases for increasing learning rate and {$\gamma$}, whereas for ReLU it is relatively steady.}
+	
 	\begin{figure}[hbt!]
 		\centering
 		\subfigure[\hlc{Impact of learning rate}]{\label{fig_SA_TT_LR}\includegraphics[clip, trim=1.75cm 17cm 5.25cm 2.75cm, width=0.475\textwidth]{TimeStudy_LR.pdf}}
@@ -896,41 +893,42 @@
 		\label{fig_SA_TrainingTime}
 	\end{figure}
 	
+	\subsubsection*{\hlc{Compute cost of performance improvement}}
+	\hlc{Increased training time generally translates to more intense use of compute resources and therefore increased cost. With Fig. {\ref{fig_SA_TrainingTime}} it is evident that the cost of compute is impacted primarily by the choice of activation function. One final question we seek to answer is does this increase show any correlation with the model performance? Fig. {\ref{fig_perfcost}} shows that, for both the activation functions, generally increased time translates to increased performance; however due to REINFORCE's high variability, this is not a sharply defined pattern. Interestingly the ReLU, with significantly lower cost compared to when activated with a Tanh function, gives the best performing model (and as expected for higher training time {\textit{within}} the ReLU experiments).}
+	
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[clip, trim=1.75cm 8.2cm 8.75cm 1.75cm, width=0.7\textwidth]{TimeStudy_CostBenefitAnalysis.pdf}
-		\caption{Training time COST BENEFIT.}
-		%\label{fig_2}
+		\caption{The cost of performance improvement.}
+		\label{fig_perfcost}
 	\end{figure}
-	
-	%% $$$ R2-2 Runtime
-	\hlc{The model sizes produced by all algorithms is extremely small: A2C 89.8 KB, DQN 56.4 KB, PPO 135.5 KB and REINFORCE 121.5 KB. We see that the DQN produced the smallest while the PPO produced the largest.}
 	
 	\section{Discussion}\label{sec_Discussion}
 	%% $$$ glue
-	\hlc{In this section, we discuss observations from our experiments and sensitivity analysis, covering properties of REINFORCE as an algorithm (both positive and limiting), aspects related to its architecture, training time, model size and cost effectiveness. We end the section with limitations of our research and potential areas for future research.}  
+	\hlc{In Section} {\ref{sec_Results}} \hlc{we conducted a series of extensive experiments comparing REINFORCE with A2C, DQN, and PPO, with REINFORCE demonstrating significantly better performance than the other algorithms. As a closed-loop system, the performance of REINFORCE, like any RL system, will experience the effects of interaction of hyperparameters } \cite{autorl:parker2022}, \hlc{ therefore to better understand REINFORCE's performance we conducted a basic interaction and sensitivity analysis of hyperparameters, in Sec. {\ref{sec_SA}}. In this Discussion section, we first lay down views of researchers on the REINFORCE algorithm. We follow that by observations from our research, covering properties of this algorithm (both positive and limiting), aspects related to its architecture, training time, model size and cost effectiveness. We end the section with limitations of our research and potential areas for future research.}
 	
 	%% $$$ R2-2-13 Computational complexity
-	\hlc{As a simple model-free RL algorithm, REINFORCE offers a derivative-free optimization of unconstrained problems.} \cite{Matni2019} \hlc{explains that, provided one can sample efficiently, REINFORCE can be used to solve essentially any problem!.} The inventor of the REINFORCE algorithm, in his original paper \cite{REINFORCE-williams1992}, mentions the inability to predict the convergent and asymptotic properties of REINFORCE algorithms using analytical means. The author mentions that \textit{simulation studies} are the primary source of understanding its behavior. 27 years later, \cite{peck2019} notes that rigorous convergence proofs are \textit{not} available for many algorithms based on REINFORCE and in their paper provide an intuition for convergence properties. This supports the extensive experimental studies on REINFORCE performed by \cite{zhang2021sample, zhang2021convergence, peck2019, duan2016benchmarking} as well our empirical research. 
+	\hlc{As a simple model-free RL algorithm, REINFORCE offers a derivative-free optimization of unconstrained problems.}{\cite{Matni2019}} \hlc{explains that, provided one can sample efficiently, REINFORCE can be used to solve essentially any problem!} The inventor of the REINFORCE algorithm, in his original paper \cite{REINFORCE-williams1992}, mentions the inability to predict the convergent and asymptotic properties of this algorithm using analytical means. The author mentions that \textit{simulation studies} are the primary source of understanding its behavior. 27 years later, \cite{peck2019} notes that rigorous convergence proofs are as of yet \textit{not} available for many algorithms based on REINFORCE and in their paper provide an intuition for convergence properties. This supports the extensive experimental studies on REINFORCE performed by \cite{zhang2021sample, zhang2021convergence, peck2019, duan2016benchmarking} as well our empirical research.  
 	
-	Both \cite{duan2016benchmarking} and \cite{zhang2021convergence} studied the behavior on multiple OpenAI Gym environments, while \cite{peck2019} provide empirical results using MuJuCo. \cite{duan2016benchmarking} observe that, despite its simplicity it is an effective algorithm in optimizing policies based on deep neural networks. On the other hand, their empirical study concluded that REINFORCE is occasionally trapped in premature convergence to local optima. REINFORCE suffers from high variance \cite{peck2019} and converges very slowly when it does. High variance implies that a large sample of environment interactions are needed to obtain a reasonable approximation of the actual gradient.
+	Both \cite{zhang2021convergence} and \cite{duan2016benchmarking} studied the behavior using multiple OpenAI Gym environments, while \cite{peck2019} provide empirical results using MuJuCo. \cite{duan2016benchmarking} observe that, despite its simplicity it is an effective algorithm in optimizing policies based on deep neural networks. On the other hand, their empirical study concluded that REINFORCE is occasionally trapped in premature convergence to local optima. REINFORCE suffers from high variance \cite{peck2019} and converges very slowly when it does. High variance implies that a large sample of environment interactions are needed to obtain a reasonable approximation of the actual gradient.
 	
 	\cite{zhang2021sample} provides the first known global convergence and sample efficiency results for the REINFORCE algorithm. Their study involved controlling the number of ``bad'' episodes as well as applying a ``doubling'' trick for studying the global convergence. Interestingly our training rounds resulted in multiple situations of ``zero'' performance (``bad'' episodes) for REINFORCE (18 instances) as also for Stable-Baseline's A2C implementation (12 instances); DQN and PPO did not show any occurrences.
 	
-	%% $$$ R1-1 Sensitivity Analysi
-	\hlc{Sensitivity of the REINFORCE algorithm to hyperparameters was analyzed via experiments in {\textcolor{red}{Section}}. As a simple algorithm REINFORCE has fewer hyperparameters compared to the more advanced algorithms and we selected learning rate, the discount factor $\gamma$ and the activation for study}. 
-		
-	There could be two possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \cite{duan2016benchmarking} observed that \textit{even} with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did. \hlc{In their survey of Auto RL} \cite{autorl:parker2022} \hlc{state that the design of neural network architectures is paid very little attention to. Their survey concludes that there is a lack of conceptual understanding on architectural design choices and the benefits they offer and most implementations use two or three hidden layers - just as did the algorithm implementations we studied (section {\ref{sec_architecture}}). Our REINFORCE implementation was even simpler with just a \textit{single} hidden layer and could be a reason for the superior performance on simple environments.} %% $$$ R1-5 7:Architecture simplicity
+	\hlc{Since RL algorithm implementations are} incredibly sensitive to hyperparameters and the neural network architectures they employ, the working implementations need several decisions to be made during high-, as well as low- level design; these strongly impact the performance, \cite{henderson2018deep, andrychowicz2021matters}. In fact the same algorithm could produce very different results depending on the code base one uses, \cite{henderson2018deep, SB3-paper}. \hlc{Our analysis in Sec. {\ref{sec_SA}} Fig. {\ref{fig_SA_LR_Relu}} indicates that, in general, higher model performance (average episodic rewards) is attained with higher discount factors $\gamma > 0.95$, learning rates in the range $5\times10^{-3}$ and $1\times10^{-2}$, and when the policy network is enabled by the ReLU activation function.}
 	
-	RL algorithms are incredibly sensitive to hyperparameters and the neural network architectures they employ. Working implementations need several decisions to be made during high-, as well as low- level design; these strongly impact the performance, \cite{henderson2018deep, andrychowicz2021matters}. In-fact the same algorithm could produce very different results depending on the code base one uses, \cite{henderson2018deep, SB3-paper}. These research pointers could additionally be the reason for the superior performance of the REINFORCE, but more significantly they collectively must be considered before AutoRL platforms become successful.
+	There could be \hlc{three} possible reasons for the positive performance demonstrated by REINFORCE. We used ReLU (rectified linear unit) as the activation function, while the other three algorithms used hyperbolic tangent (Tanh). \cite{henderson2018deep} studied four policy-gradient methods, including the PPO and TRPO, and observed that ReLU activation performs best. \hlc{Our study, Sec. {\ref{sec_SA}} Fig. {\ref{fig_SA_LR_Relu}} show higher average episodic rewards for ReLU based network and corroborates with the research findings of} {\cite{henderson2018deep}}. \hlc{The second reason is based on the observations by} \cite{duan2016benchmarking}. They observed that even with a small learning rate REINFORCE sometimes resulted in large changes to policy distribution, which possibly explains the fast convergence to local optima. On the other hand we used a larger learning rate (almost 50:1) and this could have assisted in reaching global optimas when it did. \hlc{In their survey of Auto RL, }\cite{autorl:parker2022}, \hlc{ states that the design of neural network architectures receives very little attention. Their survey concludes that there is a lack of conceptual understanding regarding architectural design choices and the benefits they offer. They state that most implementations use two or three hidden layers, similar to the algorithm implementations we studied in  (Sec. }{\ref{sec_architecture}}\hlc{). Our REINFORCE implementation was even simpler with just a single hidden layer and could be the third reason for the superior performance on simple environments.}
+		
+	%% $$$ R1-2 Strategies for reducing training time $
+	\hlc{Training a REINFORCE algorithm requires more time. What strategies might help reducing this?} \cite{Lavet2016} \hlc{has conducted an extensive analysis on the interaction of $\gamma$ and the learning-rate. Lower values of $\gamma$ lead to faster convergence but by the very definition of {$\gamma$}, often result in myopic policies. Our study agrees with this, as seen in Fig. {\ref{fig_SA_TT_G}}, for both the activation functions. According to} \cite{Lavet2016} \hlc{one strategy for speeding up the learning process is to increase the discounting rate over time, rather than keeping it static. They further show that simultaneously decreasing the learning rate while increasing {$\gamma$} further reduces training time and thus improves learning speed. Our study points to one simple yet effective strategy of using ReLU activation layer for reducing training time, without sacrificing performance, Fig. {\ref{fig_perfcost}}}.
 	
 	%% $$$ R2-2 Runtime
 	\hlc{We saw that the model sizes for all algorithms are under 140 KB. This implies that the runtime memory requirements are extremely small thus offering fast inferences. This suggests that such models can be used in embedded form on IoT devices and housed near the machines. This is a significant benefit for creating Industry 4.0 predictive maintenance solutions.} 
 	
-	While there is no doubt that this REINFORCE na\"ive implementation will be unstable and occasionally produce learning patterns that are stuck in local optimas and demonstrate premature convergence, our empirical studies indicate that it did perform well for this problem and at the least deserves further research. 
-	
+	\hlc{As a final point, we compare RL to the simpler ML methods, listed in Table {\ref{tbl_ml}}, used for a similar PdM problem. Supervised machine learning requires labeled data, RL on the other hand determines the right PdM action via trial and error. The manufacturing industry often lacks labeled fault data as reported by extremely recent surveys,} \cite{Leite2025, Hexagon2024}, \hlc{and this is one good reason for promoting RL. As can be seen in the existing literature, supervised ML, when labeled fault data is available, will outperform RL. Unlike the closed-loop RL, supervised ML is open-looped and the impact of hyperparameters is ascertainable and predictable and therefore are easier to tune,}  \cite{autorl:parker2022}. \hlc{In addition to being stable, they require far lower compute resources to train. It is therefore advisable to use ML in situation where good quality data is available.}
+		
 	%% $$$ R1-4 Limitations
 	\subsection*{\hlc{Limitations and future scope for research}}
+	
 	\hlc{Our research carries limitations -- some due to the very design of our objective and some due to unavailability of more resources and time. These however offer opportunities for further research and increase the depth of this topic and provide more knowledge in the domain of AutoRL for predictive maintenance.}
 	
 	\begin{enumerate}
@@ -938,16 +936,16 @@
 		\item \hlc{Advanced algorithms provide a richer set of hyperparameters and it is fair to assume that tuned versions of these algorithms will perform better than the na\"ive REINFORCE.}
 		\item We assume that the human preventive maintenance policy, based on experience, is ideal. In practice this might not always be the case. \hlc{We had to use expert guidelines to decide the tool replacement wear thresholds} as these were not available for the PHM dataset.
 	\end{enumerate}
-		
-	\hlc{\textbf{Avenues for future research}: Our research covers single-agent RL. Multi-agent and multi-objective serve more complex problems and are areas we plan to research in the near future. Offline RL (also called Batch RL) is a paradigm where offline data, such as previously collected data such as expert demonstrations or experiments, offer a path to generalize agents to a real world environment. No environment interaction is required in offline RL.}.
+	
+	\hlc{\textbf{Avenues for future research}: Our research covers single-agent RL. Multi-agent and multi-objective serve more complex problems and are areas we plan to research in the near future. Offline RL (also called Batch RL) is a paradigm where offline data, such as previously collected data such as expert demonstrations or experiments, offer a path to generalize agents to a real world environment. No environment interaction is required in offline RL.}
 	
 	\section{Conclusion}\label{sec_Conclusion}
-	The REINFORCE is a simple algorithm and our na\"ive implementation can be improved drastically, for example with the implementation of a baseline to reduce variance. We evaluated the REINFORCE along with industry grade implementations of more advanced algorithms, DQN, A2C and PPO, over 15 environment variants (simulated and real data). Despite its simplicity, known variance and convergence issues, it performed surprisingly well, as observed through numerical results, plots and statistical tests. 
+	The REINFORCE is a simple algorithm and our na\"ive implementation can be improved drastically, for example with the implementation of a baseline to reduce variance. We evaluated the REINFORCE along with industry grade implementations of more advanced algorithms, DQN, A2C and PPO, over 15 environment variants (simulated and real data). Despite its simplicity, known variance and convergence issues, it performed surprisingly well, as observed through numerical results, plots and statistical tests. \hlc{The hyperparameter interaction study provided insights into the impact on performance, of the two standard hyperparameters studied in the RL domain, i.e., the learning rate and the discount factor $\gamma$. Additionally, we studied the impact of the two most common activation functions used for implementing RL algorithms i.e. ReLU and Tanh. All this has surely created a valuable knowledge resource for the simple, often neglected, REINFORCE algorithm.}
 	
 	Implementing robust RL algorithms is complex and \cite{SB3-paper} puts this beautifully, mentioning how small implementation details can significantly impact performance \textit{``that is often greater than the difference between the algorithms themselves''}. 
 	
 	We hope our research contributes to empirical evidence related to the application of REINFORCE to predictive maintenance. This contribution aims to play a vital role in advancing the prospects of automated reinforcement learning i.e. AutoRL to Industry 4.0 revolution.
-		
+	
 	\backmatter
 	
 	%\bmhead{Supplementary information}
@@ -975,7 +973,6 @@
 	Will be available on request, via a GitHub link.
 	\subsection*{Author contribution}
 	%Conceptualization, R.S.; methodology, R.S.; software, R.S.; validation, S.K., S.P. and A.B.; formal analysis, R.S.; resources, S.K. and S.P.; data curation, R.S.; writing---original draft preparation, R.S.; writing---review and editing, S.K, S.P. and K.K.; supervision, S.K. and S.P.; project administration, S.K. and A.B.; funding acquisition, K.K. and S.A. All authors have read and agreed to the published version of the manuscript.
-	
 	
 	\bigskip
 	\bigskip
@@ -1111,16 +1108,6 @@
 		
 		
 	\end{appendices}
-	
-	%%===========================================================================================%%
-	%% If you are submitting to one of the Nature Portfolio journals, using the eJP submission   %%
-	%% system, please include the references within the manuscript file itself. You may do this  %%
-	%% by copying the reference list from your .bbl file, paste it into the main manuscript .tex %%
-	%% file, and delete the associated \verb+\bibliography+ commands.                            %%
-	%%===========================================================================================%%
-	
 	\clearpage
 	\bibliography{bibliography}
-	
-	
 \end{document}
